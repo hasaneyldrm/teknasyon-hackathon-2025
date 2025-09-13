@@ -598,6 +598,11 @@ class ChatController extends Controller
         ));
     }
 
+    public function docs()
+    {
+        return view('admin.docs');
+    }
+
     // API Methods for external usage
     public function documentation()
     {

@@ -37,6 +37,9 @@ Route::prefix('admin')->group(function () {
     
     // History Routes
     Route::get('/history', [ChatController::class, 'history'])->name('admin.history');
+    
+    // Documentation Routes
+    Route::get('/docs', [ChatController::class, 'docs'])->name('admin.docs');
 });
 
 // Documentation route
