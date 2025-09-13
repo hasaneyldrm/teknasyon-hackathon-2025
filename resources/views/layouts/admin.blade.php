@@ -14,6 +14,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Helvetica Font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@300;400;500;600;700&display=swap');
+    </style>
     
     <style>
         :root {
@@ -46,7 +50,7 @@
         body {
             background-color: hsl(var(--background));
             color: hsl(var(--foreground));
-            font-family: 'Inter', sans-serif;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
         .sidebar {
@@ -163,11 +167,11 @@
         <div class="w-64 sidebar flex flex-col h-screen fixed left-0 top-0 z-40">
             <!-- Logo/Brand -->
             <div class="p-6 border-b border-gray-700">
-                <h1 class="text-xl font-bold text-white flex items-center">
-                    <i class="fas fa-robot mr-3 text-blue-400"></i>
+                <h1 class="text-xl font-bold text-white flex items-center" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+                    <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="w-8 h-8 mr-3">
                     GlobalGPT
                 </h1>
-                <p class="text-sm text-gray-400 mt-1">AI Chat Assistant</p>
+                <p class="text-sm text-gray-400 mt-1" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">AI Chat Assistant</p>
             </div>
 
             <!-- Sidebar Content -->

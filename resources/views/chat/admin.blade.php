@@ -19,12 +19,12 @@
                 <div class="border-b border-gray-700 p-4">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                                <i class="fas fa-robot text-white"></i>
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center">
+                                <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="w-10 h-10 rounded-full">
                             </div>
                             <div>
-                                <h3 class="font-medium text-white">GlobalGPT</h3>
-                                <p class="text-sm text-gray-400">AI Assistant</p>
+                                <h3 class="font-medium text-white" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">GlobalGPT</h3>
+                                <p class="text-sm text-gray-400" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">AI Assistant</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -39,11 +39,11 @@
                     <!-- Welcome Message -->
                     <div class="chat-message mb-4">
                         <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-robot text-white text-sm"></i>
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">
+                                <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="w-8 h-8 rounded-full">
                             </div>
                             <div class="bg-gray-700 rounded-lg px-4 py-2 max-w-md">
-                                <p class="text-white">Merhaba! Ben GlobalGPT, sizin AI asistanınızım. Size nasıl yardımcı olabilirim?</p>
+                                <p class="text-white" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">Merhaba! Ben GlobalGPT, sizin AI asistanınızım. Size nasıl yardımcı olabilirim?</p>
                             </div>
                         </div>
                     </div>
@@ -52,8 +52,8 @@
                 <!-- Typing Indicator -->
                 <div class="typing-indicator hidden px-4 pb-4" id="typingIndicator">
                     <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-robot text-white text-sm"></i>
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">
+                            <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="w-8 h-8 rounded-full">
                         </div>
                         <div class="bg-gray-700 rounded-lg px-4 py-2">
                             <div class="typing-dots">
@@ -203,15 +203,15 @@ $(document).ready(function() {
     function addMessage(message, isUser = false) {
         const messageClass = isUser ? 'user' : 'assistant';
         const bgClass = isUser ? 'bg-blue-600' : 'bg-gray-700';
-        const iconClass = isUser ? 'fas fa-user' : 'fas fa-robot';
+        const iconContent = isUser ? '<i class="fas fa-user text-white text-sm"></i>' : '<img src="{{ asset("ggpt.png") }}" alt="GlobalGPT" class="w-8 h-8 rounded-full">';
         const alignment = isUser ? 'flex-row-reverse' : '';
         const messageAlignment = isUser ? 'text-right' : '';
         
         const messageHtml = `
             <div class="chat-message mb-4">
                 <div class="flex items-start gap-3 ${alignment}">
-                    <div class="w-8 h-8 ${bgClass} rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="${iconClass} text-white text-sm"></i>
+                    <div class="w-8 h-8 ${isUser ? bgClass : ''} rounded-full flex items-center justify-center flex-shrink-0">
+                        ${iconContent}
                     </div>
                     <div class="${bgClass} rounded-lg px-4 py-2 max-w-md ${messageAlignment}">
                         <p class="text-white">${message}</p>
@@ -318,11 +318,11 @@ function clearChat() {
         $('#chatMessages').html(`
             <div class="chat-message mb-4">
                 <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-robot text-white text-sm"></i>
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">
+                        <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="w-8 h-8 rounded-full">
                     </div>
                     <div class="bg-gray-700 rounded-lg px-4 py-2 max-w-md">
-                        <p class="text-white">Merhaba! Ben GlobalGPT, sizin AI asistanınızım. Size nasıl yardımcı olabilirim?</p>
+                        <p class="text-white" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">Merhaba! Ben GlobalGPT, sizin AI asistanınızım. Size nasıl yardımcı olabilirim?</p>
                     </div>
                 </div>
             </div>

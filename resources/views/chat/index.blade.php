@@ -5,19 +5,19 @@
 @section('content')
 <div class="chat-container">
     <div class="chat-header">
-        <h1 class="brand-title mb-2">
-            <i class="fas fa-robot me-2"></i>
+        <h1 class="brand-title mb-2" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+            <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="me-2" style="width: 32px; height: 32px; display: inline-block; vertical-align: middle;">
             GlobalGPT
         </h1>
-        <p class="subtitle mb-0">
+        <p class="subtitle mb-0" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
             Yapay zeka destekli sohbet asistanınız
         </p>
     </div>
     
     <div class="chat-messages" id="chatMessages">
         <div class="message assistant">
-            <i class="fas fa-robot me-2"></i>
-            Merhaba! Ben GlobalGPT, sizin AI asistanınızım. Size nasıl yardımcı olabilirim?
+            <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="me-2" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;">
+            <span style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">Merhaba! Ben GlobalGPT, sizin AI asistanınızım. Size nasıl yardımcı olabilirim?</span>
         </div>
     </div>
     
@@ -73,12 +73,12 @@ $(document).ready(function() {
     // Add message to chat
     function addMessage(message, isUser = false) {
         const messageClass = isUser ? 'user' : 'assistant';
-        const icon = isUser ? '<i class="fas fa-user me-2"></i>' : '<i class="fas fa-robot me-2"></i>';
+        const icon = isUser ? '<i class="fas fa-user me-2"></i>' : '<img src="{{ asset("ggpt.png") }}" alt="GlobalGPT" class="me-2" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;">';
         
         const messageHtml = `
             <div class="message ${messageClass}">
                 ${!isUser ? icon : ''}
-                ${message}
+                <span style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">${message}</span>
                 ${isUser ? icon : ''}
             </div>
         `;
