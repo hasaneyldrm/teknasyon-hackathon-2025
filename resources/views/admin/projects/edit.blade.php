@@ -105,7 +105,7 @@
                             </div>
 
                             <!-- Active Status -->
-                            <div class="flex items-center">
+                            <div class="space-y-3">
                                 <label class="flex items-center">
                                     <input type="checkbox" 
                                            name="is_active" 
@@ -114,6 +114,23 @@
                                            class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2">
                                     <span class="ml-2 text-gray-300">Proje aktif</span>
                                 </label>
+                                
+                                <label class="flex items-center">
+                                    <input type="checkbox" 
+                                           name="enable_fallback" 
+                                           value="1"
+                                           id="enable_fallback"
+                                           {{ old('enable_fallback', $project->enable_fallback) ? 'checked' : '' }}
+                                           class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+                                           onchange="toggleFallbackSettings()">
+                                    <span class="ml-2 text-gray-300">Akıllı Fallback Sistemi</span>
+                                </label>
+                                <p class="text-gray-400 text-xs ml-6">
+                                    💡 API limitine takılırsa otomatik olarak diğer AI modellerine geçer
+                                    @if($project->enable_fallback)
+                                        <br><span class="text-green-400">✓ Şu anda aktif</span>
+                                    @endif
+                                </p>
                             </div>
                         </div>
                     </div>
