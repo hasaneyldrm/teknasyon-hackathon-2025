@@ -426,42 +426,49 @@ class ChatController extends Controller
 
     public function history()
     {
-        // Chat history statistics
-        $totalMessages = 0;
+        // Chat history statistics - GERÇEK VERILER
+        $totalMessages = \App\Models\ChatMessage::count();
         $chatStats = [
             'total_messages' => $totalMessages,
-            'today_messages' => 0,
-            'this_week_messages' => 0,
-            'this_month_messages' => 0,
-            'avg_messages_per_day' => 0,
+            'today_messages' => \App\Models\ChatMessage::whereDate('created_at', today())->count(),
+            'this_week_messages' => \App\Models\ChatMessage::where('created_at', '>=', now()->startOfWeek())->count(),
+            'this_month_messages' => \App\Models\ChatMessage::where('created_at', '>=', now()->startOfMonth())->count(),
+            'avg_messages_per_day' => $totalMessages > 0 ? round(\App\Models\ChatMessage::where('created_at', '>=', now()->subDays(30))->count() / 30, 1) : 0,
         ];
 
-        // User activity statistics
+        // User activity statistics - GERÇEK VERILER
         $userStats = [
-            'active_users_today' => 0,
-            'active_users_week' => 0,
-            'total_unique_users' => 1,
+            'active_users_today' => \App\Models\ChatMessage::whereDate('created_at', today())
+                ->distinct('user_uuid')->count('user_uuid'),
+            'active_users_week' => \App\Models\ChatMessage::where('created_at', '>=', now()->startOfWeek())
+                ->distinct('user_uuid')->count('user_uuid'),
+            'total_unique_users' => \App\Models\ChatMessage::distinct('user_uuid')->count('user_uuid'),
         ];
 
-        // Recent chat messages
-        $recentChats = collect([]);
+        // Recent chat messages - GERÇEK VERILER
+        $recentChats = \App\Models\ChatMessage::latest()->limit(20)->get();
 
-        // System activity logs
-        $systemActivity = collect([]);
+        // System activity logs - GERÇEK VERILER
+        $systemActivity = \App\Models\RequestLog::latest()->limit(20)->get();
 
-        // Popular projects
-        $popularProjects = collect([]);
+        // Popular projects - GERÇEK VERILER
+        $popularProjects = \App\Models\Project::withCount('chatMessages')
+            ->orderBy('chat_messages_count', 'desc')
+            ->limit(5)
+            ->get();
 
-        // Monthly chat activity for chart
-        $monthlyActivity = collect([
-            ['date' => now()->subDays(7)->format('Y-m-d'), 'count' => 5],
-            ['date' => now()->subDays(6)->format('Y-m-d'), 'count' => 8],
-            ['date' => now()->subDays(5)->format('Y-m-d'), 'count' => 12],
-            ['date' => now()->subDays(4)->format('Y-m-d'), 'count' => 6],
-            ['date' => now()->subDays(3)->format('Y-m-d'), 'count' => 15],
-            ['date' => now()->subDays(2)->format('Y-m-d'), 'count' => 9],
-            ['date' => now()->subDays(1)->format('Y-m-d'), 'count' => 18],
-        ]);
+        // Monthly chat activity for chart - GERÇEK VERILER
+        $monthlyActivity = \App\Models\ChatMessage::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->where('created_at', '>=', now()->subDays(7))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->map(function($item) {
+                return [
+                    'date' => $item->date,
+                    'count' => $item->count
+                ];
+            });
 
         return view('admin.history', compact(
             'chatStats',
