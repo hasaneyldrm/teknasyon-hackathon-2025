@@ -220,7 +220,7 @@
                     
                     <div class="flex items-center justify-between">
                         <span class="text-gray-400">Yaş:</span>
-                        <span class="text-white font-medium">{{ $project->created_at->diffInDays(now()) }} gün</span>
+                        <span class="text-white font-medium">{{ $project->created_at->diffForHumans() }}</span>
                     </div>
                     
                     <div class="flex items-center justify-between">

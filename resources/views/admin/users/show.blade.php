@@ -163,9 +163,9 @@
                     
                     <div class="text-center">
                         <div class="text-2xl font-bold text-green-400">
-                            {{ $userStats['join_date']->diffInDays(now()) }}
+                            {{ $userStats['join_date']->diffForHumans() }}
                         </div>
-                        <div class="text-gray-400 text-sm">Gün Önce Katıldı</div>
+                        <div class="text-gray-400 text-sm">Katılım Tarihi</div>
                     </div>
                     
                     <div class="text-center">
@@ -245,7 +245,7 @@
                     
                     <div class="flex items-center justify-between">
                         <span class="text-gray-400">Hesap Yaşı:</span>
-                        <span class="text-white font-medium">{{ $user->created_at->diffInDays(now()) }} gün</span>
+                        <span class="text-white font-medium">{{ $user->created_at->diffForHumans() }}</span>
                     </div>
                     
                     <div class="flex items-center justify-between">

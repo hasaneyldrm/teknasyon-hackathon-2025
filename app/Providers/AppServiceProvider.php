@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Set Carbon locale to Turkish
+        \Carbon\Carbon::setLocale('tr');
+        setlocale(LC_TIME, 'tr_TR.UTF-8');
     }
 }
