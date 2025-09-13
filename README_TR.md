@@ -151,3 +151,4 @@ Sorularınız için issue açabilir veya e-posta gönderebilirsiniz.
 ---
 
 **GlobalGPT** ile AI'nın gücünü keşfedin! 🚀
+
