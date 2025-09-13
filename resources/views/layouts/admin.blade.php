@@ -168,7 +168,7 @@
             <!-- Logo/Brand -->
             <div class="p-6 border-b border-gray-700">
                 <h1 class="text-xl font-bold text-white flex items-center" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-                    <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="w-14 h-14.7 mr-3 rounded-lg">
+                    <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="w-14 mr-3 rounded-lg" style="height: 59.8px;">
                     GlobalGPT
                 </h1>
             </div>
