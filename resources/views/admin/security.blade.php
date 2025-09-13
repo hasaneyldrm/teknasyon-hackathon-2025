@@ -5,260 +5,266 @@
 @section('content')
 <!-- Page Header -->
 <div class="mb-8 border-b border-gray-700 p-6">
-    <h1 class="text-xl font-bold text-white mb-2">Güvenlik</h1>
-    <p class="text-gray-400">Sistem güvenliği ve erişim kontrolü yönetimi</p>
+    <h1 class="text-xl font-bold text-white mb-2">Güvenlik Yönetimi</h1>
+    <p class="text-gray-400">Sistem güvenliğini izle ve yönet</p>
 </div>
 
-<!-- Security Content -->
 <div class="p-6">
-    <!-- Security Overview Cards -->
-    <div class="grid md:grid-cols-4 gap-6 mb-8">
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <div class="text-gray-400 text-sm mb-1">Güvenlik Skoru</div>
-                    <div class="text-2xl font-bold text-green-400">95/100</div>
+    <!-- Security Stats -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+        <div class="card rounded-xl p-6 shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-400">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="m4.9 4.9 14.2 14.2"></path>
+                    </svg>
                 </div>
-                <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-shield-alt text-white"></i>
+                <div>
+                    <div class="text-2xl font-bold text-white">{{ number_format($security['ip_bans']) }}</div>
+                    <div class="text-gray-400 text-sm">IP Yasakları</div>
                 </div>
             </div>
         </div>
-        
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <div class="text-gray-400 text-sm mb-1">Engellenen IP</div>
-                    <div class="text-2xl font-bold text-red-400">12</div>
+
+        <div class="card rounded-xl p-6 shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-400">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
                 </div>
-                <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-ban text-white"></i>
+                <div>
+                    <div class="text-2xl font-bold text-white">{{ number_format($security['active_bans']) }}</div>
+                    <div class="text-gray-400 text-sm">Aktif Banlar</div>
                 </div>
             </div>
         </div>
-        
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <div class="text-gray-400 text-sm mb-1">Başarısız Giriş</div>
-                    <div class="text-2xl font-bold text-yellow-400">3</div>
+
+        <div class="card rounded-xl p-6 shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400">
+                        <path d="M3 17l6 -6l4 4l8 -8"></path>
+                        <path d="M14 7l7 0l0 7"></path>
+                    </svg>
                 </div>
-                <div class="w-12 h-12 bg-yellow-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-exclamation-triangle text-white"></i>
+                <div>
+                    <div class="text-2xl font-bold text-white">{{ number_format($security['recent_requests']) }}</div>
+                    <div class="text-gray-400 text-sm">Son 24 Saat</div>
                 </div>
             </div>
         </div>
-        
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <div class="text-gray-400 text-sm mb-1">API Rate Limit</div>
-                    <div class="text-2xl font-bold text-blue-400">85%</div>
+
+        <div class="card rounded-xl p-6 shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-400">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                        <path d="M12 9v4"></path>
+                        <path d="m12 17 .01 0"></path>
+                    </svg>
                 </div>
-                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-tachometer-alt text-white"></i>
+                <div>
+                    <div class="text-2xl font-bold text-white">{{ number_format($security['error_requests']) }}</div>
+                    <div class="text-gray-400 text-sm">Hatalı İstekler</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card rounded-xl p-6 shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-400">
+                        <path d="M12 2v10l3-3m-6 0 3 3"></path>
+                        <path d="M12 22v-10l3 3m-6 0 3-3"></path>
+                        <path d="M2 12h10l-3-3m0 6 3-3"></path>
+                        <path d="M22 12H12l3-3m0 6-3-3"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-white">{{ number_format($security['rate_limits']) }}</div>
+                    <div class="text-gray-400 text-sm">Rate Limits</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Security Sections -->
-    <div class="grid lg:grid-cols-2 gap-6 mb-8">
-        <!-- Rate Limiting -->
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-tachometer-alt text-white"></i>
-                </div>
-                <div>
-                    <h3 class="text-white font-semibold">Rate Limiting</h3>
-                    <p class="text-gray-400 text-sm">API isteklerini sınırla</p>
-                </div>
-            </div>
-            
+    <!-- Security Status -->
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <!-- System Security Status -->
+        <div class="card rounded-xl p-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-white mb-4">Sistem Güvenlik Durumu</h3>
             <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-300">Dakika başı limit</span>
-                    <span class="text-white font-medium">60 istek</span>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span class="text-gray-300">Firewall</span>
+                    </div>
+                    <span class="text-green-400 text-sm">Aktif</span>
                 </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-300">Saat başı limit</span>
-                    <span class="text-white font-medium">1000 istek</span>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span class="text-gray-300">DDoS Koruması</span>
+                    </div>
+                    <span class="text-green-400 text-sm">Aktif</span>
                 </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-300">Günlük limit</span>
-                    <span class="text-white font-medium">10000 istek</span>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span class="text-gray-300">Rate Limiting</span>
+                    </div>
+                    <span class="text-green-400 text-sm">Aktif</span>
                 </div>
-                <div class="pt-2">
-                    <button class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                        Ayarları Düzenle
-                    </button>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span class="text-gray-300">IP Filtering</span>
+                    </div>
+                    <span class="text-green-400 text-sm">Aktif</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span class="text-gray-300">Request Logging</span>
+                    </div>
+                    <span class="text-green-400 text-sm">Aktif</span>
                 </div>
             </div>
         </div>
 
-        <!-- DDoS Protection -->
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-shield-virus text-white"></i>
+        <!-- Threat Level -->
+        <div class="card rounded-xl p-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-white mb-4">Tehdit Seviyesi</h3>
+            <div class="text-center">
+                <div class="w-24 h-24 mx-auto mb-4 relative">
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                        <path class="text-gray-700" stroke="currentColor" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        <path class="text-green-500" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="15, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-400">15%</div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="text-white font-semibold">DDoS Koruması</h3>
-                    <p class="text-gray-400 text-sm">Saldırı tespiti ve engelleme</p>
-                </div>
-            </div>
-            
-            <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-300">Durum</span>
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-900 text-green-300">
-                        <i class="fas fa-circle text-xs mr-1"></i>
-                        Aktif
-                    </span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-300">Hassaslık</span>
-                    <span class="text-yellow-400 font-medium">Orta</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-300">Son saldırı</span>
-                    <span class="text-gray-400">2 gün önce</span>
-                </div>
-                <div class="pt-2">
-                    <button class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200">
-                        Ayarları Düzenle
-                    </button>
-                </div>
+                <div class="text-green-400 font-medium">DÜŞÜK</div>
+                <div class="text-gray-400 text-sm mt-1">Sistem güvenli</div>
             </div>
         </div>
     </div>
 
-    <!-- Blocked IPs -->
-    <div class="card rounded-xl p-6 mb-8">
-        <div class="flex justify-between items-center mb-6">
-            <div>
-                <h3 class="text-lg font-semibold text-white">Engellenen IP Adresleri</h3>
-                <p class="text-gray-400 text-sm">Sistemden engellenen IP adresleri</p>
-            </div>
-            <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200">
-                <i class="fas fa-ban mr-2"></i>
-                IP Engelle
-            </button>
+    <!-- Recent IP Bans -->
+    @if($recentBans->count() > 0)
+    <div class="card rounded-xl p-6 shadow-sm mb-8">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-white">Son IP Yasakları</h3>
+            <span class="text-sm text-gray-400">{{ $recentBans->count() }} kayıt</span>
         </div>
-
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
                     <tr class="border-b border-gray-700">
                         <th class="text-left py-3 px-4 text-gray-400 font-medium">IP Adresi</th>
+                        <th class="text-left py-3 px-4 text-gray-400 font-medium">Tip</th>
                         <th class="text-left py-3 px-4 text-gray-400 font-medium">Sebep</th>
-                        <th class="text-left py-3 px-4 text-gray-400 font-medium">Engelleme Tarihi</th>
-                        <th class="text-left py-3 px-4 text-gray-400 font-medium">Durum</th>
-                        <th class="text-left py-3 px-4 text-gray-400 font-medium">İşlemler</th>
+                        <th class="text-left py-3 px-4 text-gray-400 font-medium">Süre Sonu</th>
+                        <th class="text-left py-3 px-4 text-gray-400 font-medium">Tarih</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="border-b border-gray-700 hover:bg-gray-800 transition-colors duration-200">
-                        <td class="py-3 px-4 text-white font-mono">192.168.1.100</td>
-                        <td class="py-3 px-4 text-red-400">DDoS Saldırısı</td>
-                        <td class="py-3 px-4 text-gray-300">15 Ekim 2024</td>
+                    @foreach($recentBans as $ban)
+                    <tr class="border-b border-gray-700/50 hover:bg-gray-700/20">
                         <td class="py-3 px-4">
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-900 text-red-300">
-                                Engellendi
+                            <code class="text-blue-400 bg-gray-800 px-2 py-1 rounded text-sm">{{ $ban->ip_address }}</code>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                                @if($ban->type === 'permanent') bg-red-500/20 text-red-400
+                                @else bg-orange-500/20 text-orange-400 @endif">
+                                {{ $ban->type === 'permanent' ? 'Kalıcı' : 'Geçici' }}
                             </span>
                         </td>
-                        <td class="py-3 px-4">
-                            <button class="text-green-400 hover:text-green-300 mr-2" title="Engeli Kaldır">
-                                <i class="fas fa-unlock"></i>
-                            </button>
-                            <button class="text-red-400 hover:text-red-300" title="Kalıcı Engelle">
-                                <i class="fas fa-ban"></i>
-                            </button>
+                        <td class="py-3 px-4 text-gray-300">{{ Str::limit($ban->reason, 50) }}</td>
+                        <td class="py-3 px-4 text-gray-400">
+                            {{ $ban->expires_at ? $ban->expires_at->format('d.m.Y H:i') : 'Kalıcı' }}
                         </td>
+                        <td class="py-3 px-4 text-gray-400">{{ $ban->created_at->format('d.m.Y H:i') }}</td>
                     </tr>
-                    <tr class="border-b border-gray-700 hover:bg-gray-800 transition-colors duration-200">
-                        <td class="py-3 px-4 text-white font-mono">10.0.0.55</td>
-                        <td class="py-3 px-4 text-yellow-400">Şüpheli Aktivite</td>
-                        <td class="py-3 px-4 text-gray-300">14 Ekim 2024</td>
-                        <td class="py-3 px-4">
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-900 text-yellow-300">
-                                İzleniyor
-                            </span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <button class="text-red-400 hover:text-red-300 mr-2" title="Engelle">
-                                <i class="fas fa-ban"></i>
-                            </button>
-                            <button class="text-gray-400 hover:text-gray-300" title="Beyaz Listeye Ekle">
-                                <i class="fas fa-check"></i>
-                            </button>
-                        </td>
-                    </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
     </div>
+    @endif
 
-    <!-- Security Logs -->
-    <div class="card rounded-xl p-6">
-        <div class="flex justify-between items-center mb-6">
-            <div>
-                <h3 class="text-lg font-semibold text-white">Güvenlik Logları</h3>
-                <p class="text-gray-400 text-sm">Son güvenlik olayları</p>
-            </div>
-            <button class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                <i class="fas fa-download mr-2"></i>
-                Logları İndir
-            </button>
+    <!-- Recent Security Logs -->
+    @if($recentLogs->count() > 0)
+    <div class="card rounded-xl p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-white">Son Güvenlik Logları</h3>
+            <span class="text-sm text-gray-400">{{ $recentLogs->count() }} kayıt</span>
         </div>
-
-        <div class="space-y-3">
-            <div class="flex items-center gap-4 p-3 bg-gray-800 rounded-lg">
-                <div class="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
-                <div class="flex-1">
-                    <div class="text-white text-sm">Şüpheli IP adresi engellendi: 192.168.1.100</div>
-                    <div class="text-gray-400 text-xs">15 Ekim 2024, 14:30</div>
-                </div>
-                <div class="text-red-400 text-xs font-medium">CRITICAL</div>
-            </div>
-            
-            <div class="flex items-center gap-4 p-3 bg-gray-800 rounded-lg">
-                <div class="w-2 h-2 bg-yellow-500 rounded-full flex-shrink-0"></div>
-                <div class="flex-1">
-                    <div class="text-white text-sm">Rate limit aşıldı: 10.0.0.55</div>
-                    <div class="text-gray-400 text-xs">15 Ekim 2024, 13:45</div>
-                </div>
-                <div class="text-yellow-400 text-xs font-medium">WARNING</div>
-            </div>
-            
-            <div class="flex items-center gap-4 p-3 bg-gray-800 rounded-lg">
-                <div class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                <div class="flex-1">
-                    <div class="text-white text-sm">Güvenlik taraması tamamlandı</div>
-                    <div class="text-gray-400 text-xs">15 Ekim 2024, 12:00</div>
-                </div>
-                <div class="text-blue-400 text-xs font-medium">INFO</div>
-            </div>
-            
-            <div class="flex items-center gap-4 p-3 bg-gray-800 rounded-lg">
-                <div class="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                <div class="flex-1">
-                    <div class="text-white text-sm">Sistem güvenlik güncellemesi uygulandı</div>
-                    <div class="text-gray-400 text-xs">14 Ekim 2024, 09:15</div>
-                </div>
-                <div class="text-green-400 text-xs font-medium">SUCCESS</div>
-            </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-gray-700">
+                        <th class="text-left py-3 px-4 text-gray-400 font-medium">IP</th>
+                        <th class="text-left py-3 px-4 text-gray-400 font-medium">Method</th>
+                        <th class="text-left py-3 px-4 text-gray-400 font-medium">Path</th>
+                        <th class="text-left py-3 px-4 text-gray-400 font-medium">Status</th>
+                        <th class="text-left py-3 px-4 text-gray-400 font-medium">Response Time</th>
+                        <th class="text-left py-3 px-4 text-gray-400 font-medium">Tarih</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($recentLogs as $log)
+                    <tr class="border-b border-gray-700/50 hover:bg-gray-700/20">
+                        <td class="py-3 px-4">
+                            <code class="text-blue-400 bg-gray-800 px-2 py-1 rounded text-xs">{{ $log->ip_address }}</code>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium
+                                @if($log->method === 'GET') bg-blue-500/20 text-blue-400
+                                @elseif($log->method === 'POST') bg-green-500/20 text-green-400
+                                @elseif($log->method === 'PUT') bg-yellow-500/20 text-yellow-400
+                                @elseif($log->method === 'DELETE') bg-red-500/20 text-red-400
+                                @else bg-gray-500/20 text-gray-400 @endif">
+                                {{ $log->method }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-gray-300">
+                            <code class="text-sm">{{ Str::limit($log->path, 40) }}</code>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium
+                                @if($log->response_code >= 200 && $log->response_code < 300) bg-green-500/20 text-green-400
+                                @elseif($log->response_code >= 300 && $log->response_code < 400) bg-yellow-500/20 text-yellow-400
+                                @elseif($log->response_code >= 400 && $log->response_code < 500) bg-orange-500/20 text-orange-400
+                                @else bg-red-500/20 text-red-400 @endif">
+                                {{ $log->response_code }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-gray-400">{{ $log->response_time }}ms</td>
+                        <td class="py-3 px-4 text-gray-400">{{ $log->created_at->format('d.m.Y H:i') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
-</div>
-@endsection
+    @endif
 
-@section('scripts')
-<script>
-$(document).ready(function() {
-    // Security page functionality can be added here
-    console.log('Security page loaded');
-});
-</script>
+    <!-- Empty States -->
+    @if($recentBans->count() === 0 && $recentLogs->count() === 0)
+    <div class="card rounded-xl p-12 shadow-sm text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-gray-500">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        <h3 class="text-lg font-semibold text-white mb-2">Güvenlik Logları Temiz</h3>
+        <p class="text-gray-400">Henüz güvenlik olayı kaydedilmedi. Sistem güvenli görünüyor.</p>
+    </div>
+    @endif
+</div>
 @endsection

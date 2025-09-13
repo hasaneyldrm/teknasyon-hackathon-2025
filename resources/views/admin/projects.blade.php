@@ -5,255 +5,164 @@
 @section('content')
 <!-- Page Header -->
 <div class="mb-8 border-b border-gray-700 p-6">
-    <h1 class="text-xl font-bold text-white mb-2">Projeler</h1>
-    <p class="text-gray-400">AI projelerini görüntüleyin ve yönetin</p>
+    <h1 class="text-xl font-bold text-white mb-2">Proje Yönetimi</h1>
+    <p class="text-gray-400">AI projelerini görüntüle ve yönet</p>
 </div>
 
-<!-- Projects Content -->
 <div class="p-6">
     <!-- Stats Cards -->
-    <div class="grid md:grid-cols-4 gap-6 mb-8">
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <div class="text-gray-400 text-sm mb-1">Toplam Proje</div>
-                    <div class="text-2xl font-bold text-white">3</div>
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="card rounded-xl p-6 shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-400">
+                        <path d="M4 4h5l2 2h5a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path>
+                    </svg>
                 </div>
-                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-folder text-white"></i>
+                <div>
+                    <div class="text-2xl font-bold text-white">{{ number_format($stats['total_projects']) }}</div>
+                    <div class="text-gray-400 text-sm">Toplam Proje</div>
                 </div>
             </div>
         </div>
-        
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <div class="text-gray-400 text-sm mb-1">Aktif Proje</div>
-                    <div class="text-2xl font-bold text-white">2</div>
+
+        <div class="card rounded-xl p-6 shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400">
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
+                    </svg>
                 </div>
-                <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-play text-white"></i>
+                <div>
+                    <div class="text-2xl font-bold text-white">{{ number_format($stats['active_projects']) }}</div>
+                    <div class="text-gray-400 text-sm">Aktif Proje</div>
                 </div>
             </div>
         </div>
-        
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center justify-between">
+
+        <div class="card rounded-xl p-6 shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-400">
+                        <path d="m21 2-1 1m-2 2-3 3m-2 2-1 1"></path>
+                        <path d="m12 12-1 1-3 3-2 2-1 1"></path>
+                        <path d="M2 21 21 2"></path>
+                        <path d="m6 18 3-3 2-2 3-3 1-1"></path>
+                    </svg>
+                </div>
                 <div>
-                    <div class="text-gray-400 text-sm mb-1">Bu Ay API</div>
-                    <div class="text-2xl font-bold text-white">1.2K</div>
-                </div>
-                <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-code text-white"></i>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <div class="text-gray-400 text-sm mb-1">Başarı Oranı</div>
-                    <div class="text-2xl font-bold text-white">98.5%</div>
-                </div>
-                <div class="w-12 h-12 bg-yellow-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-chart-line text-white"></i>
+                    <div class="text-2xl font-bold text-white">{{ number_format($stats['inactive_projects']) }}</div>
+                    <div class="text-gray-400 text-sm">Pasif Proje</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Projects Grid -->
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- GlobalGPT Project -->
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center gap-4 mb-4">
-                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-robot text-white text-xl"></i>
-                </div>
-                <div>
-                    <h3 class="text-white font-semibold">GlobalGPT</h3>
-                    <p class="text-gray-400 text-sm">AI Chat Assistant</p>
-                </div>
-            </div>
-            
-            <div class="space-y-3 mb-4">
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400 text-sm">API Çağrıları</span>
-                    <span class="text-white font-medium">856</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400 text-sm">Aktif Kullanıcılar</span>
-                    <span class="text-white font-medium">42</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400 text-sm">Başarı Oranı</span>
-                    <span class="text-green-400 font-medium">99.2%</span>
-                </div>
-            </div>
-            
-            <div class="flex justify-between items-center">
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-900 text-green-300">
-                    <i class="fas fa-circle text-xs mr-1"></i>
-                    Aktif
-                </span>
-                <div class="flex gap-2">
-                    <button class="p-2 text-blue-400 hover:text-blue-300 transition-colors duration-200" title="Düzenle">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="p-2 text-gray-400 hover:text-gray-300 transition-colors duration-200" title="Ayarlar">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                </div>
-            </div>
+    <!-- Projects List -->
+    <div class="card rounded-xl p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-white">AI Projeleri</h3>
+            <span class="text-sm text-gray-400">{{ $projects->count() }} proje</span>
         </div>
 
-        <!-- AI Assistant Project -->
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center gap-4 mb-4">
-                <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-brain text-white text-xl"></i>
-                </div>
-                <div>
-                    <h3 class="text-white font-semibold">AI Assistant</h3>
-                    <p class="text-gray-400 text-sm">Smart Helper Bot</p>
-                </div>
-            </div>
-            
-            <div class="space-y-3 mb-4">
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400 text-sm">API Çağrıları</span>
-                    <span class="text-white font-medium">324</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400 text-sm">Aktif Kullanıcılar</span>
-                    <span class="text-white font-medium">18</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400 text-sm">Başarı Oranı</span>
-                    <span class="text-green-400 font-medium">97.8%</span>
-                </div>
-            </div>
-            
-            <div class="flex justify-between items-center">
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-900 text-green-300">
-                    <i class="fas fa-circle text-xs mr-1"></i>
-                    Aktif
-                </span>
-                <div class="flex gap-2">
-                    <button class="p-2 text-blue-400 hover:text-blue-300 transition-colors duration-200" title="Düzenle">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="p-2 text-gray-400 hover:text-gray-300 transition-colors duration-200" title="Ayarlar">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
+        @if($projects->count() > 0)
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach($projects as $project)
+                <div class="bg-gray-700 rounded-xl p-6 hover:bg-gray-600 transition-colors">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            @if($project->image)
+                                <img src="{{ $project->image }}" alt="{{ $project->name }}" class="w-10 h-10 rounded-lg object-cover">
+                            @else
+                                <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center text-white text-sm font-medium">
+                                    {{ substr($project->name, 0, 1) }}
+                                </div>
+                            @endif
+                            <div>
+                                <h4 class="text-white font-semibold">{{ $project->name }}</h4>
+                                <p class="text-gray-400 text-sm">{{ $project->model ?? 'gpt-3.5-turbo' }}</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                            @if($project->is_active) bg-green-500/20 text-green-400
+                            @else bg-red-500/20 text-red-400 @endif">
+                            {{ $project->is_active ? 'Aktif' : 'Pasif' }}
+                        </span>
+                    </div>
 
-        <!-- Content Generator Project -->
-        <div class="card rounded-xl p-6">
-            <div class="flex items-center gap-4 mb-4">
-                <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-pen-fancy text-white text-xl"></i>
-                </div>
-                <div>
-                    <h3 class="text-white font-semibold">Content Generator</h3>
-                    <p class="text-gray-400 text-sm">AI Content Writer</p>
-                </div>
-            </div>
-            
-            <div class="space-y-3 mb-4">
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400 text-sm">API Çağrıları</span>
-                    <span class="text-white font-medium">156</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400 text-sm">Aktif Kullanıcılar</span>
-                    <span class="text-white font-medium">7</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400 text-sm">Başarı Oranı</span>
-                    <span class="text-yellow-400 font-medium">95.1%</span>
-                </div>
-            </div>
-            
-            <div class="flex justify-between items-center">
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-900 text-yellow-300">
-                    <i class="fas fa-pause text-xs mr-1"></i>
-                    Beklemede
-                </span>
-                <div class="flex gap-2">
-                    <button class="p-2 text-blue-400 hover:text-blue-300 transition-colors duration-200" title="Düzenle">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="p-2 text-gray-400 hover:text-gray-300 transition-colors duration-200" title="Ayarlar">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
+                    @if($project->description)
+                        <p class="text-gray-300 text-sm mb-4">{{ Str::limit($project->description, 100) }}</p>
+                    @endif
 
-        <!-- Add New Project Card -->
-        <div class="card rounded-xl p-6 border-2 border-dashed border-gray-600 hover:border-gray-500 transition-colors duration-200 cursor-pointer" onclick="showNewProjectModal()">
-            <div class="flex flex-col items-center justify-center h-full text-center">
-                <div class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center mb-4">
-                    <i class="fas fa-plus text-gray-400 text-xl"></i>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">Temperature:</span>
+                            <span class="text-white">{{ $project->temperature ?? 0.7 }}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">Max Tokens:</span>
+                            <span class="text-white">{{ number_format($project->max_token ?? 1000) }}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">API Key:</span>
+                            <span class="text-green-400">{{ $project->api_key ? '✓ Yapılandırıldı' : '✗ Eksik' }}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-gray-400">
+                        <span>{{ $project->created_at->format('d.m.Y') }}</span>
+                        <span>{{ $project->updated_at->diffForHumans() }}</span>
+                    </div>
                 </div>
-                <h3 class="text-gray-400 font-medium mb-2">Yeni Proje</h3>
-                <p class="text-gray-500 text-sm">Yeni bir AI projesi oluşturun</p>
+                @endforeach
+            </div>
+        @else
+            <div class="text-center py-12 text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-gray-500">
+                    <path d="M4 4h5l2 2h5a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path>
+                </svg>
+                <p class="text-lg mb-2">Henüz proje bulunmuyor</p>
+                <p class="text-sm">İlk AI projenizi oluşturmak için başlayın.</p>
+            </div>
+        @endif
+    </div>
+
+    <!-- Project Configuration Info -->
+    @if($projects->count() > 0)
+    <div class="card rounded-xl p-6 shadow-sm mt-6">
+        <h3 class="text-lg font-semibold text-white mb-4">Proje Ayarları Bilgisi</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div>
+                <h4 class="text-white font-medium mb-3">Desteklenen Modeller</h4>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span class="text-gray-300">gpt-3.5-turbo</span>
+                        <span class="text-gray-500">(Varsayılan)</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <span class="text-gray-300">gpt-4</span>
+                        <span class="text-gray-500">(Premium)</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <span class="text-gray-300">gpt-4-turbo</span>
+                        <span class="text-gray-500">(En yeni)</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-white font-medium mb-3">Yapılandırma Parametreleri</h4>
+                <div class="space-y-2 text-sm text-gray-300">
+                    <div><strong>Temperature:</strong> 0.0-1.0 (Yaratıcılık seviyesi)</div>
+                    <div><strong>Max Tokens:</strong> 1-4000 (Maksimum yanıt uzunluğu)</div>
+                    <div><strong>API Key:</strong> OpenAI API anahtarı gerekli</div>
+                </div>
             </div>
         </div>
     </div>
+    @endif
 </div>
-
-<!-- New Project Modal -->
-<div id="newProjectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-semibold text-white">Yeni Proje Oluştur</h3>
-            <button onclick="closeNewProjectModal()" class="text-gray-400 hover:text-white">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <form class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Proje Adı</label>
-                <input type="text" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Proje adını girin">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Açıklama</label>
-                <textarea class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="3" placeholder="Proje açıklaması"></textarea>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Proje Tipi</label>
-                <select class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option>Chat Bot</option>
-                    <option>Content Generator</option>
-                    <option>Data Analyzer</option>
-                    <option>Custom AI</option>
-                </select>
-            </div>
-            <div class="flex gap-3 pt-4">
-                <button type="button" onclick="closeNewProjectModal()" class="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                    İptal
-                </button>
-                <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                    Oluştur
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-@endsection
-
-@section('scripts')
-<script>
-function showNewProjectModal() {
-    $('#newProjectModal').removeClass('hidden').addClass('flex');
-}
-
-function closeNewProjectModal() {
-    $('#newProjectModal').removeClass('flex').addClass('hidden');
-}
-</script>
 @endsection

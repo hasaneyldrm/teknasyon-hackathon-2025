@@ -118,21 +118,66 @@ class ChatController extends Controller
 
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $stats = [
+            'total_users' => \App\Models\User::count(),
+            'admin_users' => \App\Models\AdminUser::count(),
+            'total_messages' => \App\Models\ChatMessage::count(),
+            'recent_messages' => \App\Models\ChatMessage::where('created_at', '>=', now()->subDays(30))->count(),
+            'total_projects' => \App\Models\Project::count(),
+            'active_projects' => \App\Models\Project::where('is_active', true)->count(),
+            'total_requests' => \App\Models\RequestLog::count(),
+            'recent_requests' => \App\Models\RequestLog::where('created_at', '>=', now()->subDays(7))->count(),
+            'ip_bans' => \App\Models\IpBan::count(),
+            'active_bans' => \App\Models\IpBan::where(function($q) {
+                $q->where('type', 'permanent')
+                  ->orWhere('expires_at', '>', now());
+            })->count(),
+        ];
+
+        return view('admin.dashboard', compact('stats'));
     }
 
     public function users()
     {
-        return view('admin.users');
+        $users = \App\Models\User::latest()->get();
+        $adminUsers = \App\Models\AdminUser::latest()->get();
+        $stats = [
+            'total_users' => \App\Models\User::count(),
+            'admin_users' => \App\Models\AdminUser::count(),
+            'recent_users' => \App\Models\User::where('created_at', '>=', now()->subDays(30))->count(),
+        ];
+
+        return view('admin.users', compact('users', 'adminUsers', 'stats'));
     }
 
     public function projects()
     {
-        return view('admin.projects');
+        $projects = \App\Models\Project::latest()->get();
+        $stats = [
+            'total_projects' => \App\Models\Project::count(),
+            'active_projects' => \App\Models\Project::where('is_active', true)->count(),
+            'inactive_projects' => \App\Models\Project::where('is_active', false)->count(),
+        ];
+
+        return view('admin.projects', compact('projects', 'stats'));
     }
 
     public function security()
     {
-        return view('admin.security');
+        $security = [
+            'ip_bans' => \App\Models\IpBan::count(),
+            'active_bans' => \App\Models\IpBan::where(function($q) {
+                $q->where('type', 'permanent')
+                  ->orWhere('expires_at', '>', now());
+            })->count(),
+            'recent_requests' => \App\Models\RequestLog::where('created_at', '>=', now()->subDays(1))->count(),
+            'error_requests' => \App\Models\RequestLog::where('response_code', '>=', 400)->count(),
+            'rate_limits' => \App\Models\RateLimit::count(),
+        ];
+
+        $recentBans = \App\Models\IpBan::latest()->limit(10)->get();
+        $recentLogs = \App\Models\RequestLog::latest()->limit(20)->get();
+
+        return view('admin.security', compact('security', 'recentBans', 'recentLogs'));
     }
 }

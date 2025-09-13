@@ -12,288 +12,188 @@
 <!-- Stats Cards -->
 <div class="p-6">
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <!-- Total Messages Card -->
+        <!-- Total Users Card -->
         <div class="card rounded-xl py-6 shadow-sm">
             <div class="px-6">
-                <div class="text-gray-400 text-sm mb-2">Toplam Mesaj</div>
-                <div class="text-2xl font-semibold text-white mb-4" id="totalMessages">0</div>
-                <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center justify-center rounded-md border border-gray-600 px-2 py-0.5 text-xs font-medium text-green-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
-                            <path d="M3 17l6 -6l4 4l8 -8"></path>
-                            <path d="M14 7l7 0l0 7"></path>
-                        </svg>
-                        +12%
-                    </span>
-                </div>
-            </div>
-            <div class="px-6 mt-4">
-                <div class="text-sm text-gray-400">Bu ay geçen aya göre artış</div>
-            </div>
-        </div>
-
-        <!-- Active Users Card -->
-        <div class="card rounded-xl py-6 shadow-sm">
-            <div class="px-6">
-                <div class="text-gray-400 text-sm mb-2">Aktif Kullanıcılar</div>
-                <div class="text-2xl font-semibold text-white mb-4" id="activeUsers">0</div>
+                <div class="text-gray-400 text-sm mb-2">Toplam Kullanıcı</div>
+                <div class="text-2xl font-semibold text-white mb-4">{{ number_format($stats['total_users']) }}</div>
                 <div class="flex items-center gap-2">
                     <span class="inline-flex items-center justify-center rounded-md border border-gray-600 px-2 py-0.5 text-xs font-medium text-blue-400">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
-                            <path d="M5 12h14"></path>
+                            <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                            <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
                         </svg>
-                        0%
+                        {{ $stats['admin_users'] }} admin
                     </span>
                 </div>
             </div>
             <div class="px-6 mt-4">
-                <div class="text-sm text-gray-400">Online kullanıcılar</div>
+                <div class="text-sm text-gray-400">Kayıtlı kullanıcılar</div>
             </div>
         </div>
 
-        <!-- API Requests Card -->
+        <!-- Chat Messages Card -->
         <div class="card rounded-xl py-6 shadow-sm">
             <div class="px-6">
-                <div class="text-gray-400 text-sm mb-2">API İstekleri</div>
-                <div class="text-2xl font-semibold text-white mb-4" id="apiRequests">0</div>
+                <div class="text-gray-400 text-sm mb-2">Chat Mesajları</div>
+                <div class="text-2xl font-semibold text-white mb-4">{{ number_format($stats['total_messages']) }}</div>
                 <div class="flex items-center gap-2">
                     <span class="inline-flex items-center justify-center rounded-md border border-gray-600 px-2 py-0.5 text-xs font-medium text-green-400">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
-                            <path d="M3 17l6 -6l4 4l8 -8"></path>
-                            <path d="M14 7l7 0l0 7"></path>
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                         </svg>
-                        +8%
+                        {{ $stats['recent_messages'] }} son 30 gün
                     </span>
                 </div>
             </div>
             <div class="px-6 mt-4">
-                <div class="text-sm text-gray-400">Başarılı API çağrıları</div>
+                <div class="text-sm text-gray-400">Toplam mesaj sayısı</div>
             </div>
         </div>
 
-        <!-- Success Rate Card -->
+        <!-- Projects Card -->
         <div class="card rounded-xl py-6 shadow-sm">
             <div class="px-6">
-                <div class="text-gray-400 text-sm mb-2">Başarı Oranı</div>
-                <div class="text-2xl font-semibold text-white mb-4">
-                    <div class="flex flex-col gap-2">
-                        <div class="flex items-center gap-3">
-                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                            <span class="text-lg font-bold text-green-400" id="successRate">98.5%</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                            <span class="text-lg font-bold text-red-400" id="errorRate">1.5%</span>
-                        </div>
-                    </div>
+                <div class="text-gray-400 text-sm mb-2">Projeler</div>
+                <div class="text-2xl font-semibold text-white mb-4">{{ number_format($stats['total_projects']) }}</div>
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center justify-center rounded-md border border-gray-600 px-2 py-0.5 text-xs font-medium text-purple-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                            <path d="M4 4h5l2 2h5a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path>
+                        </svg>
+                        {{ $stats['active_projects'] }} aktif
+                    </span>
                 </div>
             </div>
             <div class="px-6 mt-4">
-                <div class="text-sm text-gray-400">Son 24 saat</div>
+                <div class="text-sm text-gray-400">AI projeleri</div>
+            </div>
+        </div>
+
+        <!-- Security Card -->
+        <div class="card rounded-xl py-6 shadow-sm">
+            <div class="px-6">
+                <div class="text-gray-400 text-sm mb-2">Güvenlik</div>
+                <div class="text-2xl font-semibold text-white mb-4">{{ number_format($stats['ip_bans']) }}</div>
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center justify-center rounded-md border border-gray-600 px-2 py-0.5 text-xs font-medium text-orange-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        {{ $stats['active_bans'] }} aktif ban
+                    </span>
+                </div>
+            </div>
+            <div class="px-6 mt-4">
+                <div class="text-sm text-gray-400">IP yasakları</div>
             </div>
         </div>
     </div>
 
-    <!-- Charts Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <!-- Usage Chart -->
-        <div class="card rounded-xl p-6">
-            <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <i class="fas fa-chart-line text-blue-400"></i>
-                Kullanım İstatistikleri
-            </h3>
-            <div class="h-64 flex items-center justify-center">
-                <canvas id="usageChart" width="400" height="200"></canvas>
+    <!-- Request Statistics -->
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <!-- Request Stats -->
+        <div class="card rounded-xl p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-white">İstek İstatistikleri</h3>
+                <div class="text-sm text-gray-400">Son 7 gün</div>
             </div>
-        </div>
-
-        <!-- Response Times -->
-        <div class="card rounded-xl p-6">
-            <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <i class="fas fa-clock text-green-400"></i>
-                Yanıt Süreleri
-            </h3>
             <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400">Ortalama</span>
-                    <span class="text-white font-medium" id="avgResponseTime">1.2s</span>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-400">Toplam İstek</span>
+                    <span class="text-white font-medium">{{ number_format($stats['total_requests']) }}</span>
                 </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400">En Hızlı</span>
-                    <span class="text-green-400 font-medium" id="fastestResponse">0.8s</span>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-400">Son 7 Gün</span>
+                    <span class="text-green-400 font-medium">{{ number_format($stats['recent_requests']) }}</span>
                 </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-400">En Yavaş</span>
-                    <span class="text-red-400 font-medium" id="slowestResponse">3.1s</span>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div class="bg-green-500 h-2 rounded-full" style="width: {{ $stats['total_requests'] > 0 ? ($stats['recent_requests'] / $stats['total_requests']) * 100 : 0 }}%"></div>
                 </div>
-                <div class="mt-4">
-                    <div class="text-sm text-gray-400 mb-2">Yanıt Süresi Dağılımı</div>
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-3">
-                            <div class="w-full bg-gray-700 rounded-full h-2">
-                                <div class="bg-green-500 h-2 rounded-full" style="width: 75%"></div>
-                            </div>
-                            <span class="text-xs text-gray-400 whitespace-nowrap">< 2s (75%)</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-full bg-gray-700 rounded-full h-2">
-                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 20%"></div>
-                            </div>
-                            <span class="text-xs text-gray-400 whitespace-nowrap">2-5s (20%)</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-full bg-gray-700 rounded-full h-2">
-                                <div class="bg-red-500 h-2 rounded-full" style="width: 5%"></div>
-                            </div>
-                            <span class="text-xs text-gray-400 whitespace-nowrap">> 5s (5%)</span>
-                        </div>
-                    </div>
+            </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="card rounded-xl p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-white">Sistem Durumu</h3>
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span class="text-green-400 text-sm">Online</span>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-400">Database</span>
+                    <span class="text-green-400">✓ MySQL</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-400">OpenAI API</span>
+                    <span class="text-green-400">✓ Aktif</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-400">Chat Servisi</span>
+                    <span class="text-green-400">✓ Çalışıyor</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Recent Activity -->
-    <div class="card rounded-xl p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-semibold text-white flex items-center gap-2">
-                <i class="fas fa-history text-purple-400"></i>
-                Son Aktiviteler
-            </h3>
-            <button class="text-blue-400 hover:text-blue-300 text-sm">
-                Tümünü Gör
-            </button>
-        </div>
-        <div class="space-y-4" id="recentActivities">
-            <!-- Activities will be loaded here -->
-            <div class="flex items-center gap-4 p-3 bg-gray-800 rounded-lg">
-                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                <div class="flex-1">
-                    <div class="text-white text-sm">Yeni mesaj alındı</div>
-                    <div class="text-gray-400 text-xs">2 dakika önce</div>
+    <!-- Quick Actions -->
+    <div class="card rounded-xl p-6 shadow-sm">
+        <h3 class="text-lg font-semibold text-white mb-4">Hızlı İşlemler</h3>
+        <div class="grid md:grid-cols-4 gap-4">
+            <a href="{{ route('admin.users') }}" class="flex items-center gap-3 p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">
+                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400">
+                        <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                        <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                    </svg>
                 </div>
-                <div class="text-gray-400 text-xs">Chat API</div>
-            </div>
-            <div class="flex items-center gap-4 p-3 bg-gray-800 rounded-lg">
-                <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <div class="flex-1">
-                    <div class="text-white text-sm">Sistem durumu kontrol edildi</div>
-                    <div class="text-gray-400 text-xs">5 dakika önce</div>
+                <div>
+                    <div class="text-white font-medium">Kullanıcılar</div>
+                    <div class="text-gray-400 text-sm">Yönet</div>
                 </div>
-                <div class="text-gray-400 text-xs">System</div>
-            </div>
-            <div class="flex items-center gap-4 p-3 bg-gray-800 rounded-lg">
-                <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                <div class="flex-1">
-                    <div class="text-white text-sm">OpenAI API limiti güncellendi</div>
-                    <div class="text-gray-400 text-xs">1 saat önce</div>
+            </a>
+
+            <a href="{{ route('admin.projects') }}" class="flex items-center gap-3 p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">
+                <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-400">
+                        <path d="M4 4h5l2 2h5a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path>
+                    </svg>
                 </div>
-                <div class="text-gray-400 text-xs">API</div>
-            </div>
+                <div>
+                    <div class="text-white font-medium">Projeler</div>
+                    <div class="text-gray-400 text-sm">Yönet</div>
+                </div>
+            </a>
+
+            <a href="{{ route('admin.security') }}" class="flex items-center gap-3 p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">
+                <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-400">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-white font-medium">Güvenlik</div>
+                    <div class="text-gray-400 text-sm">Yönet</div>
+                </div>
+            </a>
+
+            <a href="http://localhost:8081" target="_blank" class="flex items-center gap-3 p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">
+                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400">
+                        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                        <path d="M3 5v14a9 3 0 0 0 18 0V5"></path>
+                        <path d="M3 12a9 3 0 0 0 18 0"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-white font-medium">phpMyAdmin</div>
+                    <div class="text-gray-400 text-sm">Database</div>
+                </div>
+            </a>
         </div>
     </div>
 </div>
-@endsection
-
-@section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-$(document).ready(function() {
-    // Load dashboard data
-    loadDashboardData();
-    
-    // Initialize chart
-    initializeChart();
-    
-    // Refresh data every 30 seconds
-    setInterval(loadDashboardData, 30000);
-});
-
-function loadDashboardData() {
-    // Simulate loading dashboard data
-    // In real implementation, this would be an AJAX call to backend
-    
-    // Update stats with sample data
-    $('#totalMessages').text('1,234');
-    $('#activeUsers').text('42');
-    $('#apiRequests').text('856');
-    $('#avgResponseTime').text('1.2s');
-    $('#fastestResponse').text('0.8s');
-    $('#slowestResponse').text('3.1s');
-    
-    // You can add real AJAX call here:
-    /*
-    $.ajax({
-        url: '/admin/dashboard-data',
-        method: 'GET',
-        success: function(response) {
-            if (response.success) {
-                $('#totalMessages').text(response.data.total_messages);
-                $('#activeUsers').text(response.data.active_users);
-                $('#apiRequests').text(response.data.api_requests);
-                // Update other fields...
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Dashboard data loading error:', error);
-        }
-    });
-    */
-}
-
-function initializeChart() {
-    const ctx = document.getElementById('usageChart').getContext('2d');
-    
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
-            datasets: [{
-                label: 'Mesajlar',
-                data: [12, 19, 8, 25, 42, 38, 28],
-                borderColor: '#3b82f6',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                tension: 0.4,
-                fill: true
-            }, {
-                label: 'API Çağrıları',
-                data: [8, 15, 12, 35, 28, 45, 22],
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#9ca3af'
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: '#9ca3af'
-                    },
-                    grid: {
-                        color: '#374151'
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: '#9ca3af'
-                    },
-                    grid: {
-                        color: '#374151'
-                    }
-                }
-            }
-        }
-    });
-}
-</script>
 @endsection
