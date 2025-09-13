@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: globalgpt_phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: host.docker.internal
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ''
+      UPLOAD_LIMIT: 300M
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    volumes:
+      - phpmyadmin_data:/sessions
+
+volumes:
+  phpmyadmin_data:
