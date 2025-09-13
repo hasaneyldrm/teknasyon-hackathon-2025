@@ -145,22 +145,22 @@
                     @enderror
                 </div>
 
-                <!-- App Source Field -->
+                <!-- Project Field -->
                 <div class="mb-6">
-                    <label for="app_source" class="block text-sm font-medium text-gray-300 mb-2">
-                        Uygulama Kaynağı
+                    <label for="project_id" class="block text-sm font-medium text-gray-300 mb-2">
+                        Proje
                     </label>
-                    <select id="app_source" 
-                            name="app_source"
+                    <select id="project_id" 
+                            name="project_id"
                             class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="">Proje seçin</option>
                         @foreach(\App\Models\Project::where('is_active', true)->get() as $project)
-                            <option value="{{ $project->name }}" {{ old('app_source', $user->app_source) == $project->name ? 'selected' : '' }}>
+                            <option value="{{ $project->id }}" {{ old('project_id', $user->project_id) == $project->id ? 'selected' : '' }}>
                                 {{ $project->name }}
                             </option>
                         @endforeach
                     </select>
-                    @error('app_source')
+                    @error('project_id')
                         <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>

@@ -26,7 +26,7 @@ class User extends Authenticatable
         'uuid',
         'coin',
         'token',
-        'app_source',
+        'project_id',
     ];
 
     /**
@@ -56,6 +56,11 @@ class User extends Authenticatable
     public function projects()
     {
         return $this->hasMany(\App\Models\Project::class);
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(\App\Models\Project::class);
     }
 
     /**

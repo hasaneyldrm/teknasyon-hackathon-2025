@@ -109,18 +109,24 @@
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-400 mb-2">Uygulama Kaynağı</label>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Proje</label>
                             <div class="text-white">
-                                @if($user->app_source)
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-500/20 text-blue-400">
-                                        @if($user->app_source == 'LogPress')
-                                            📰 {{ $user->app_source }}
+                                @if($user->project)
+                                    <div class="flex items-center gap-3">
+                                        @if($user->project->logo)
+                                            <img src="{{ asset($user->project->logo) }}" alt="{{ $user->project->name }}" class="w-8 h-8 rounded">
                                         @else
-                                            🔧 {{ $user->app_source ?? 'Bilinmiyor' }}
+                                            <div class="w-8 h-8 bg-blue-500 rounded flex items-center justify-center text-white text-sm">
+                                                {{ substr($user->project->name, 0, 1) }}
+                                            </div>
                                         @endif
-                                    </span>
+                                        <div>
+                                            <div class="text-white font-medium">{{ $user->project->name }}</div>
+                                            <div class="text-gray-400 text-xs">ID: {{ $user->project->id }}</div>
+                                        </div>
+                                    </div>
                                 @else
-                                    <span class="text-gray-400">Bilinmiyor</span>
+                                    <span class="text-gray-400">Proje atanmamış</span>
                                 @endif
                             </div>
                         </div>

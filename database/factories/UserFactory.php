@@ -32,7 +32,9 @@ class UserFactory extends Factory
             'uuid' => fake()->uuid(),
             'coin' => fake()->numberBetween(0, 1000),
             'token' => Str::random(32),
-            'app_source' => 'LogPress',
+            'project_id' => function () {
+                return \App\Models\Project::where('name', 'LogPress')->first()->id ?? null;
+            },
         ];
     }
 

@@ -216,7 +216,7 @@ class ChatController extends Controller
 
     public function users()
     {
-        $users = \App\Models\User::latest()->paginate(15);
+        $users = \App\Models\User::with('project')->latest()->paginate(15);
         $stats = [
             'total_users' => \App\Models\User::count(),
             'recent_users' => \App\Models\User::where('created_at', '>=', now()->subDays(30))->count(),
@@ -268,14 +268,14 @@ class ChatController extends Controller
 
     public function storeUser(Request $request)
     {
-        $activeProjects = \App\Models\Project::where('is_active', true)->pluck('name')->toArray();
+        $activeProjects = \App\Models\Project::where('is_active', true)->pluck('id')->toArray();
         
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'coin' => 'nullable|integer|min:0',
-            'app_source' => 'nullable|string|in:' . implode(',', $activeProjects),
+            'project_id' => 'nullable|integer|in:' . implode(',', $activeProjects),
         ]);
 
         $user = \App\Models\User::create([
@@ -284,7 +284,7 @@ class ChatController extends Controller
             'password' => \Hash::make($request->password),
             'email_verified_at' => $request->has('email_verified') ? now() : null,
             'coin' => $request->coin ?? 0,
-            'app_source' => $request->app_source,
+            'project_id' => $request->project_id,
         ]);
 
         return redirect()->route('admin.users')->with('success', 'Kullanıcı başarıyla oluşturuldu!');
@@ -292,7 +292,7 @@ class ChatController extends Controller
 
     public function showUser($id)
     {
-        $user = \App\Models\User::findOrFail($id);
+        $user = \App\Models\User::with('project')->findOrFail($id);
         $userStats = [
             'total_messages' => \App\Models\ChatMessage::where('user_uuid', $user->id)->count(),
             'last_activity' => \App\Models\ChatMessage::where('user_uuid', $user->id)->latest()->first()?->created_at,
@@ -304,21 +304,21 @@ class ChatController extends Controller
 
     public function editUser($id)
     {
-        $user = \App\Models\User::findOrFail($id);
+        $user = \App\Models\User::with('project')->findOrFail($id);
         return view('admin.users.edit', compact('user'));
     }
 
     public function updateUser(Request $request, $id)
     {
         $user = \App\Models\User::findOrFail($id);
-        $activeProjects = \App\Models\Project::where('is_active', true)->pluck('name')->toArray();
+        $activeProjects = \App\Models\Project::where('is_active', true)->pluck('id')->toArray();
         
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'password' => 'nullable|string|min:8|confirmed',
             'coin' => 'nullable|integer|min:0',
-            'app_source' => 'nullable|string|in:' . implode(',', $activeProjects),
+            'project_id' => 'nullable|integer|in:' . implode(',', $activeProjects),
         ]);
 
         $user->update([
@@ -326,7 +326,7 @@ class ChatController extends Controller
             'email' => $request->email,
             'email_verified_at' => $request->has('email_verified') ? now() : null,
             'coin' => $request->coin ?? 0,
-            'app_source' => $request->app_source,
+            'project_id' => $request->project_id,
         ]);
 
         if ($request->filled('password')) {
