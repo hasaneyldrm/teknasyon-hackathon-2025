@@ -63,6 +63,15 @@
                     </div>
                 @endif
 
+                @if($project->instructions)
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Sistem Talimatları (Pre-prompt)</label>
+                        <div class="bg-gray-800 rounded-lg p-4">
+                            <p class="text-white text-sm leading-relaxed">{{ $project->instructions }}</p>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-2">AI Modeli</label>
@@ -86,6 +95,11 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-2">Max Tokens</label>
                         <div class="text-white">{{ number_format($project->max_token) }}</div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Token Tüketim Limiti</label>
+                        <div class="text-white">{{ number_format($project->max_tokens_limit ?? 1000) }}</div>
                     </div>
                     
                     <div>

@@ -370,10 +370,8 @@ class ChatController extends Controller
             'fallback_order' => 'nullable|array',
         ]);
 
-        $userId = 1; // For now, use default user ID
-
         $data = $request->only(['name', 'description', 'instructions', 'api_key', 'gemini_key', 'model', 'temperature', 'max_token', 'max_tokens_limit']);
-        $data['user_id'] = $userId;
+        $data['user_id'] = 1; // Default user ID
         $data['is_active'] = $request->has('is_active');
         $data['enable_fallback'] = $request->has('enable_fallback');
         $data['fallback_order'] = $request->fallback_order;
@@ -393,8 +391,7 @@ class ChatController extends Controller
 
     public function showProject($id)
     {
-        $userId = 1; // For now, use default user ID
-        $project = \App\Models\Project::where('user_id', $userId)->findOrFail($id);
+        $project = \App\Models\Project::findOrFail($id);
         
         $projectStats = [
             'total_messages' => $project->chatMessages()->count(),
@@ -407,15 +404,19 @@ class ChatController extends Controller
 
     public function editProject($id)
     {
-        $userId = 1; // For now, use default user ID
-        $project = \App\Models\Project::where('user_id', $userId)->findOrFail($id);
+        $project = \App\Models\Project::findOrFail($id);
         return view('admin.projects.edit', compact('project'));
     }
 
     public function updateProject(Request $request, $id)
     {
-        $userId = 1; // For now, use default user ID
-        $project = \App\Models\Project::where('user_id', $userId)->findOrFail($id);
+        $project = \App\Models\Project::findOrFail($id);
+        
+        // Debug: Log the request data
+        \Log::info('Update Project Request', [
+            'project_id' => $id,
+            'request_data' => $request->all()
+        ]);
         
         $request->validate([
             'name' => 'required|string|max:255',
@@ -457,15 +458,23 @@ class ChatController extends Controller
             $data['logo'] = 'uploads/logos/' . $logoName;
         }
 
-        $project->update($data);
-
-        return redirect()->route('admin.projects')->with('success', 'Proje başarıyla güncellendi!');
+        try {
+            $project->update($data);
+            \Log::info('Project updated successfully', ['project_id' => $id]);
+            return redirect()->route('admin.projects')->with('success', 'Proje başarıyla güncellendi!');
+        } catch (\Exception $e) {
+            \Log::error('Project update failed', [
+                'project_id' => $id,
+                'error' => $e->getMessage(),
+                'data' => $data
+            ]);
+            return redirect()->back()->with('error', 'Proje güncellenirken bir hata oluştu: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function destroyProject($id)
     {
-        $userId = 1; // For now, use default user ID
-        $project = \App\Models\Project::where('user_id', $userId)->findOrFail($id);
+        $project = \App\Models\Project::findOrFail($id);
         
         // Delete logo if exists
         if ($project->logo && file_exists(public_path($project->logo))) {
