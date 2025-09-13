@@ -139,15 +139,14 @@ class ChatController extends Controller
 
     public function users()
     {
-        $users = \App\Models\User::latest()->get();
-        $adminUsers = \App\Models\AdminUser::latest()->get();
+        $users = \App\Models\User::latest()->paginate(15);
         $stats = [
             'total_users' => \App\Models\User::count(),
-            'admin_users' => \App\Models\AdminUser::count(),
             'recent_users' => \App\Models\User::where('created_at', '>=', now()->subDays(30))->count(),
+            'active_users' => \App\Models\User::whereNotNull('email_verified_at')->count(),
         ];
 
-        return view('admin.users', compact('users', 'adminUsers', 'stats'));
+        return view('admin.users', compact('users', 'stats'));
     }
 
     public function projects()
@@ -179,5 +178,82 @@ class ChatController extends Controller
         $recentLogs = \App\Models\RequestLog::latest()->limit(20)->get();
 
         return view('admin.security', compact('security', 'recentBans', 'recentLogs'));
+    }
+
+    // User CRUD Methods
+    public function createUser()
+    {
+        return view('admin.users.create');
+    }
+
+    public function storeUser(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = \App\Models\User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => \Hash::make($request->password),
+            'email_verified_at' => $request->has('email_verified') ? now() : null,
+        ]);
+
+        return redirect()->route('admin.users')->with('success', 'Kullanıcı başarıyla oluşturuldu!');
+    }
+
+    public function showUser($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        $userStats = [
+            'total_messages' => \App\Models\ChatMessage::where('user_uuid', $user->id)->count(),
+            'last_activity' => \App\Models\ChatMessage::where('user_uuid', $user->id)->latest()->first()?->created_at,
+            'join_date' => $user->created_at,
+        ];
+
+        return view('admin.users.show', compact('user', 'userStats'));
+    }
+
+    public function editUser($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        return view('admin.users.edit', compact('user'));
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:8|confirmed',
+        ]);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'email_verified_at' => $request->has('email_verified') ? now() : null,
+        ]);
+
+        if ($request->filled('password')) {
+            $user->update(['password' => \Hash::make($request->password)]);
+        }
+
+        return redirect()->route('admin.users')->with('success', 'Kullanıcı başarıyla güncellendi!');
+    }
+
+    public function destroyUser($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        
+        // Delete related chat messages
+        \App\Models\ChatMessage::where('user_uuid', $user->id)->delete();
+        
+        $user->delete();
+
+        return redirect()->route('admin.users')->with('success', 'Kullanıcı başarıyla silindi!');
     }
 }

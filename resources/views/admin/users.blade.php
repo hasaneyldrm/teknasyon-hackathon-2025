@@ -5,19 +5,39 @@
 @section('content')
 <!-- Page Header -->
 <div class="mb-8 border-b border-gray-700 p-6">
-    <h1 class="text-xl font-bold text-white mb-2">Kullanıcı Yönetimi</h1>
-    <p class="text-gray-400">Kullanıcıları görüntüle ve yönet</p>
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-xl font-bold text-white mb-2">Kullanıcı Yönetimi</h1>
+            <p class="text-gray-400">Kullanıcıları görüntüle ve yönet</p>
+        </div>
+        <a href="{{ route('admin.users.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <line x1="19" y1="8" x2="19" y2="14"></line>
+                <line x1="22" y1="11" x2="16" y2="11"></line>
+            </svg>
+            Yeni Kullanıcı
+        </a>
+    </div>
 </div>
 
 <div class="p-6">
+    <!-- Success Message -->
+    @if(session('success'))
+        <div class="bg-green-500/20 border border-green-500 text-green-400 px-4 py-3 rounded-lg mb-6">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <!-- Stats Cards -->
     <div class="grid md:grid-cols-3 gap-6 mb-8">
         <div class="card rounded-xl p-6 shadow-sm">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400">
-                        <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-                        <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
                     </svg>
                 </div>
                 <div>
@@ -29,22 +49,23 @@
 
         <div class="card rounded-xl p-6 shadow-sm">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-400">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22,4 12,14.01 9,11.01"></polyline>
                     </svg>
                 </div>
                 <div>
-                    <div class="text-2xl font-bold text-white">{{ number_format($stats['admin_users']) }}</div>
-                    <div class="text-gray-400 text-sm">Admin Kullanıcı</div>
+                    <div class="text-2xl font-bold text-white">{{ number_format($stats['active_users']) }}</div>
+                    <div class="text-gray-400 text-sm">Aktif Kullanıcı</div>
                 </div>
             </div>
         </div>
 
         <div class="card rounded-xl p-6 shadow-sm">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400">
+                <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-400">
                         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                         <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
                         <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
@@ -59,82 +80,11 @@
         </div>
     </div>
 
-    <!-- Admin Users Section -->
-    <div class="card rounded-xl p-6 shadow-sm mb-8">
-        <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold text-white">Admin Kullanıcıları</h3>
-            <span class="text-sm text-gray-400">{{ $adminUsers->count() }} kullanıcı</span>
-        </div>
-
-        @if($adminUsers->count() > 0)
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead>
-                        <tr class="border-b border-gray-700">
-                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Kullanıcı</th>
-                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Email</th>
-                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Rol</th>
-                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Durum</th>
-                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Son Giriş</th>
-                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Oluşturulma</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($adminUsers as $admin)
-                        <tr class="border-b border-gray-700/50 hover:bg-gray-700/20">
-                            <td class="py-3 px-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                                        {{ substr($admin->name, 0, 1) }}
-                                    </div>
-                                    <span class="text-white font-medium">{{ $admin->name }}</span>
-                                </div>
-                            </td>
-                            <td class="py-3 px-4 text-gray-300">{{ $admin->email }}</td>
-                            <td class="py-3 px-4">
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-                                    @if($admin->role === 'super_admin') bg-red-500/20 text-red-400
-                                    @elseif($admin->role === 'admin') bg-purple-500/20 text-purple-400
-                                    @else bg-blue-500/20 text-blue-400 @endif">
-                                    {{ ucfirst($admin->role) }}
-                                </span>
-                            </td>
-                            <td class="py-3 px-4">
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-                                    @if($admin->is_active) bg-green-500/20 text-green-400
-                                    @else bg-red-500/20 text-red-400 @endif">
-                                    {{ $admin->is_active ? 'Aktif' : 'Pasif' }}
-                                </span>
-                            </td>
-                            <td class="py-3 px-4 text-gray-400">
-                                {{ $admin->last_login_at ? $admin->last_login_at->diffForHumans() : 'Hiç' }}
-                            </td>
-                            <td class="py-3 px-4 text-gray-400">
-                                {{ $admin->created_at->format('d.m.Y H:i') }}
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @else
-            <div class="text-center py-8 text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-gray-500">
-                    <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
-                </svg>
-                <p>Henüz admin kullanıcısı bulunmuyor.</p>
-            </div>
-        @endif
-    </div>
-
-    <!-- Regular Users Section -->
+    <!-- Users Table -->
     <div class="card rounded-xl p-6 shadow-sm">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold text-white">Normal Kullanıcılar</h3>
-            <span class="text-sm text-gray-400">{{ $users->count() }} kullanıcı</span>
+            <h3 class="text-lg font-semibold text-white">Kullanıcılar</h3>
+            <span class="text-sm text-gray-400">{{ $users->total() }} kullanıcı</span>
         </div>
 
         @if($users->count() > 0)
@@ -144,8 +94,9 @@
                         <tr class="border-b border-gray-700">
                             <th class="text-left py-3 px-4 text-gray-400 font-medium">Kullanıcı</th>
                             <th class="text-left py-3 px-4 text-gray-400 font-medium">Email</th>
-                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Email Doğrulama</th>
-                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Oluşturulma</th>
+                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Durum</th>
+                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Kayıt Tarihi</th>
+                            <th class="text-left py-3 px-4 text-gray-400 font-medium">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -170,18 +121,48 @@
                             <td class="py-3 px-4 text-gray-400">
                                 {{ $user->created_at->format('d.m.Y H:i') }}
                             </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ route('admin.users.show', $user->id) }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors">
+                                        Görüntüle
+                                    </a>
+                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded text-sm transition-colors">
+                                        Düzenle
+                                    </a>
+                                    <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" class="inline" onsubmit="return confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors">
+                                            Sil
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            <div class="mt-6">
+                {{ $users->links() }}
+            </div>
         @else
-            <div class="text-center py-8 text-gray-400">
+            <div class="text-center py-12 text-gray-400">
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-gray-500">
-                    <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
                 </svg>
-                <p>Henüz normal kullanıcı bulunmuyor.</p>
+                <p class="text-lg mb-2">Henüz kullanıcı bulunmuyor</p>
+                <p class="text-sm mb-4">İlk kullanıcıyı oluşturmak için başlayın.</p>
+                <a href="{{ route('admin.users.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Yeni Kullanıcı Ekle
+                </a>
             </div>
         @endif
     </div>
