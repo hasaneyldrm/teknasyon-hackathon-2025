@@ -26,6 +26,14 @@ Route::prefix('admin')->group(function () {
     Route::get('/users/{id}/edit', [ChatController::class, 'editUser'])->name('admin.users.edit');
     Route::put('/users/{id}', [ChatController::class, 'updateUser'])->name('admin.users.update');
     Route::delete('/users/{id}', [ChatController::class, 'destroyUser'])->name('admin.users.destroy');
+    
+    // Project CRUD Routes
+    Route::get('/projects/create', [ChatController::class, 'createProject'])->name('admin.projects.create');
+    Route::post('/projects', [ChatController::class, 'storeProject'])->name('admin.projects.store');
+    Route::get('/projects/{id}', [ChatController::class, 'showProject'])->name('admin.projects.show');
+    Route::get('/projects/{id}/edit', [ChatController::class, 'editProject'])->name('admin.projects.edit');
+    Route::put('/projects/{id}', [ChatController::class, 'updateProject'])->name('admin.projects.update');
+    Route::delete('/projects/{id}', [ChatController::class, 'destroyProject'])->name('admin.projects.destroy');
 });
 
 // Chat API endpoint

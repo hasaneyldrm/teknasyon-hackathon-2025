@@ -14,12 +14,15 @@ class Project extends Model
     protected $fillable = [
         'name',
         'api_key',
+        'gemini_key',
         'max_token',
         'image',
+        'logo',
         'temperature',
         'description',
         'model',
         'is_active',
+        'user_id',
     ];
 
     protected $casts = [
@@ -32,11 +35,31 @@ class Project extends Model
 
     public function setApiKeyAttribute($value)
     {
-        $this->attributes['api_key'] = Crypt::encryptString($value);
+        if ($value) {
+            $this->attributes['api_key'] = Crypt::encryptString($value);
+        }
     }
 
     public function getApiKeyAttribute($value)
     {
+        if (!$value) return null;
+        try {
+            return Crypt::decryptString($value);
+        } catch (DecryptException $e) {
+            return null;
+        }
+    }
+
+    public function setGeminiKeyAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['gemini_key'] = Crypt::encryptString($value);
+        }
+    }
+
+    public function getGeminiKeyAttribute($value)
+    {
+        if (!$value) return null;
         try {
             return Crypt::decryptString($value);
         } catch (DecryptException $e) {
@@ -47,6 +70,11 @@ class Project extends Model
     public function getDecryptedApiKey()
     {
         return $this->api_key;
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function chatMessages()

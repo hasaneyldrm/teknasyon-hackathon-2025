@@ -151,11 +151,14 @@ class ChatController extends Controller
 
     public function projects()
     {
-        $projects = \App\Models\Project::latest()->get();
+        // For now, we'll use user ID 1 as default. In real app, use Auth::id()
+        $userId = 1;
+        
+        $projects = \App\Models\Project::where('user_id', $userId)->latest()->paginate(12);
         $stats = [
-            'total_projects' => \App\Models\Project::count(),
-            'active_projects' => \App\Models\Project::where('is_active', true)->count(),
-            'inactive_projects' => \App\Models\Project::where('is_active', false)->count(),
+            'total_projects' => \App\Models\Project::where('user_id', $userId)->count(),
+            'active_projects' => \App\Models\Project::where('user_id', $userId)->where('is_active', true)->count(),
+            'inactive_projects' => \App\Models\Project::where('user_id', $userId)->where('is_active', false)->count(),
         ];
 
         return view('admin.projects', compact('projects', 'stats'));
@@ -255,5 +258,128 @@ class ChatController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users')->with('success', 'Kullanıcı başarıyla silindi!');
+    }
+
+    // Project CRUD Methods
+    public function createProject()
+    {
+        return view('admin.projects.create');
+    }
+
+    public function storeProject(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'api_key' => 'nullable|string',
+            'gemini_key' => 'nullable|string',
+            'model' => 'required|string|in:gpt-3.5-turbo,gpt-4,gpt-4-turbo,gemini-pro',
+            'temperature' => 'required|numeric|between:0,1',
+            'max_token' => 'required|integer|between:1,4000',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $userId = 1; // For now, use default user ID
+
+        $data = $request->only(['name', 'description', 'api_key', 'gemini_key', 'model', 'temperature', 'max_token']);
+        $data['user_id'] = $userId;
+        $data['is_active'] = $request->has('is_active');
+
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            $logo = $request->file('logo');
+            $logoName = time() . '_' . $logo->getClientOriginalName();
+            $logo->move(public_path('uploads/logos'), $logoName);
+            $data['logo'] = 'uploads/logos/' . $logoName;
+        }
+
+        $project = \App\Models\Project::create($data);
+
+        return redirect()->route('admin.projects')->with('success', 'Proje başarıyla oluşturuldu!');
+    }
+
+    public function showProject($id)
+    {
+        $userId = 1; // For now, use default user ID
+        $project = \App\Models\Project::where('user_id', $userId)->findOrFail($id);
+        
+        $projectStats = [
+            'total_messages' => $project->chatMessages()->count(),
+            'recent_messages' => $project->chatMessages()->where('created_at', '>=', now()->subDays(30))->count(),
+            'last_activity' => $project->chatMessages()->latest()->first()?->created_at,
+        ];
+
+        return view('admin.projects.show', compact('project', 'projectStats'));
+    }
+
+    public function editProject($id)
+    {
+        $userId = 1; // For now, use default user ID
+        $project = \App\Models\Project::where('user_id', $userId)->findOrFail($id);
+        return view('admin.projects.edit', compact('project'));
+    }
+
+    public function updateProject(Request $request, $id)
+    {
+        $userId = 1; // For now, use default user ID
+        $project = \App\Models\Project::where('user_id', $userId)->findOrFail($id);
+        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'api_key' => 'nullable|string',
+            'gemini_key' => 'nullable|string',
+            'model' => 'required|string|in:gpt-3.5-turbo,gpt-4,gpt-4-turbo,gemini-pro',
+            'temperature' => 'required|numeric|between:0,1',
+            'max_token' => 'required|integer|between:1,4000',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $data = $request->only(['name', 'description', 'model', 'temperature', 'max_token']);
+        $data['is_active'] = $request->has('is_active');
+
+        // Only update API keys if they are provided
+        if ($request->filled('api_key')) {
+            $data['api_key'] = $request->api_key;
+        }
+        if ($request->filled('gemini_key')) {
+            $data['gemini_key'] = $request->gemini_key;
+        }
+
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            // Delete old logo if exists
+            if ($project->logo && file_exists(public_path($project->logo))) {
+                unlink(public_path($project->logo));
+            }
+            
+            $logo = $request->file('logo');
+            $logoName = time() . '_' . $logo->getClientOriginalName();
+            $logo->move(public_path('uploads/logos'), $logoName);
+            $data['logo'] = 'uploads/logos/' . $logoName;
+        }
+
+        $project->update($data);
+
+        return redirect()->route('admin.projects')->with('success', 'Proje başarıyla güncellendi!');
+    }
+
+    public function destroyProject($id)
+    {
+        $userId = 1; // For now, use default user ID
+        $project = \App\Models\Project::where('user_id', $userId)->findOrFail($id);
+        
+        // Delete logo if exists
+        if ($project->logo && file_exists(public_path($project->logo))) {
+            unlink(public_path($project->logo));
+        }
+        
+        // Delete related data
+        $project->chatMessages()->delete();
+        $project->requestLogs()->delete();
+        
+        $project->delete();
+
+        return redirect()->route('admin.projects')->with('success', 'Proje başarıyla silindi!');
     }
 }
