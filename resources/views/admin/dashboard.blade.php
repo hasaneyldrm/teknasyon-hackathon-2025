@@ -300,37 +300,77 @@ $(document).ready(function() {
             plugins: {
                 legend: {
                     display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: 'transparent',
+                    borderWidth: 0
                 }
             },
             scales: {
                 x: {
+                    display: true,
                     grid: {
-                        display: false
+                        display: false,
+                        drawBorder: false,
+                        drawOnChartArea: false,
+                        drawTicks: false
                     },
                     ticks: {
                         color: '#6B7280',
                         font: {
                             size: 11
-                        }
+                        },
+                        padding: 10
+                    },
+                    border: {
+                        display: false
                     }
                 },
                 y: {
+                    display: true,
                     grid: {
-                        color: '#374151'
+                        display: false,
+                        drawBorder: false,
+                        drawOnChartArea: false,
+                        drawTicks: false
                     },
                     ticks: {
-                        color: '#6B7280',
-                        font: {
-                            size: 11
-                        }
+                        display: false
                     },
-                    beginAtZero: true
+                    beginAtZero: true,
+                    border: {
+                        display: false
+                    }
                 }
             },
             elements: {
                 point: {
-                    radius: 2,
-                    hoverRadius: 4
+                    radius: 0,
+                    hoverRadius: 6,
+                    hitRadius: 15,
+                    borderWidth: 0,
+                    hoverBorderWidth: 2
+                },
+                line: {
+                    borderWidth: 3,
+                    tension: 0.4,
+                    borderCapStyle: 'round',
+                    borderJoinStyle: 'round'
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 10,
+                    left: 10,
+                    right: 10
                 }
             }
         };

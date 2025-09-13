@@ -35,9 +35,7 @@ Route::prefix('admin')->group(function () {
     Route::put('/projects/{id}', [ChatController::class, 'updateProject'])->name('admin.projects.update');
     Route::delete('/projects/{id}', [ChatController::class, 'destroyProject'])->name('admin.projects.destroy');
     
-    // Settings and History Routes
-    Route::get('/settings', [ChatController::class, 'settings'])->name('admin.settings');
-    Route::post('/settings', [ChatController::class, 'updateSettings'])->name('admin.settings.update');
+    // History Routes
     Route::get('/history', [ChatController::class, 'history'])->name('admin.history');
 });
 
@@ -46,4 +44,3 @@ Route::post('/chat', [ChatController::class, 'chat'])->name('chat.send');
 
 // History and other routes
 Route::get('/history', [ChatController::class, 'history'])->name('chat.history');
-Route::get('/settings', [ChatController::class, 'settings'])->name('chat.settings');
