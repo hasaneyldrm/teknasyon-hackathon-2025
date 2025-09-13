@@ -89,10 +89,9 @@
                 <p class="text-gray-400 text-sm mb-2">Örnek İstek:</p>
                 <div class="bg-gray-800 rounded-lg p-4 text-sm">
                     <pre class="text-gray-300"><code>{
+  "uuid": "user-12345-unique-id",
   "name": "Ahmet Yılmaz",
-  "email": "ahmet@example.com", 
-  "password": "güvenli123",
-  "project_id": 1
+  "project_id": "aGFzaGVkLXByb2plY3QtaWQ="
 }</code></pre>
                 </div>
             </div>
@@ -104,9 +103,11 @@
   "success": true,
   "message": "Kullanıcı başarıyla oluşturuldu",
   "data": {
-    "token": "abc123...",
+    "uuid": "user-12345-unique-id",
+    "name": "Ahmet Yılmaz",
     "coin": 100,
-    ...
+    "project_id": "aGFzaGVkLXByb2plY3QtaWQ=",
+    "project_name": "Proje Adı"
   }
 }</code></pre>
                 </div>
@@ -130,8 +131,8 @@
                 <div class="bg-gray-800 rounded-lg p-4 text-sm">
                     <pre class="text-gray-300"><code>{
   "message": "Merhaba AI!",
-  "user_token": "abc123...",
-  "project_id": 1
+  "uuid": "user-12345-unique-id",
+  "project_id": "aGFzaGVkLXByb2plY3QtaWQ="
 }</code></pre>
                 </div>
             </div>
@@ -145,7 +146,8 @@
   "data": {
     "tokens_used": 45,
     "remaining_coins": 99,
-    ...
+    "conversation_id": "conv-uuid-123",
+    "response_time": 1.234
   }
 }</code></pre>
                 </div>
@@ -161,13 +163,13 @@
             
             <div class="mb-4">
                 <p class="text-gray-400 text-sm mb-2">Endpoint:</p>
-                <code class="text-indigo-400 bg-gray-800 px-3 py-2 rounded block text-sm">GET /api/users/{token}</code>
+                <code class="text-indigo-400 bg-gray-800 px-3 py-2 rounded block text-sm">GET /api/users/{uuid}</code>
             </div>
 
             <div class="mb-4">
                 <p class="text-gray-400 text-sm mb-2">Örnek İstek:</p>
                 <div class="bg-gray-800 rounded-lg p-4 text-sm">
-                    <pre class="text-gray-300"><code>GET {{ url('/api/users/abc123...') }}</code></pre>
+                    <pre class="text-gray-300"><code>GET {{ url('/api/users/user-12345-unique-id') }}</code></pre>
                 </div>
             </div>
 
@@ -177,10 +179,11 @@
                     <pre class="text-gray-300"><code>{
   "success": true,
   "data": {
+    "uuid": "user-12345-unique-id",
     "name": "Ahmet Yılmaz",
     "coin": 95,
-    "project": {...},
-    ...
+    "project_id": "aGFzaGVkLXByb2plY3QtaWQ=",
+    "project_name": "Proje Adı"
   }
 }</code></pre>
                 </div>
@@ -202,19 +205,19 @@
                 <div class="bg-gray-800 rounded-lg p-4">
                     <h4 class="text-white font-medium mb-2">1. Kullanıcı Oluştur</h4>
                     <p class="text-gray-400 text-sm mb-2">POST {{ url('/api/users') }}</p>
-                    <p class="text-xs text-gray-500">Body'de name, email, password gönder</p>
+                    <p class="text-xs text-gray-500">Body'de uuid, name, project_id (hashli) gönder</p>
                 </div>
                 
                 <div class="bg-gray-800 rounded-lg p-4">
-                    <h4 class="text-white font-medium mb-2">2. Token'ı Kaydet</h4>
-                    <p class="text-gray-400 text-sm mb-2">Response'dan token'ı al</p>
-                    <p class="text-xs text-gray-500">Bu token'ı chat isteklerinde kullanacaksın</p>
+                    <h4 class="text-white font-medium mb-2">2. UUID'yi Kaydet</h4>
+                    <p class="text-gray-400 text-sm mb-2">Response'dan UUID'yi al</p>
+                    <p class="text-xs text-gray-500">Bu UUID'yi chat isteklerinde kullanacaksın</p>
                 </div>
                 
                 <div class="bg-gray-800 rounded-lg p-4">
                     <h4 class="text-white font-medium mb-2">3. Chat Gönder</h4>
                     <p class="text-gray-400 text-sm mb-2">POST {{ url('/api/chat') }}</p>
-                    <p class="text-xs text-gray-500">Body'de message ve user_token gönder</p>
+                    <p class="text-xs text-gray-500">Body'de message, uuid ve project_id gönder</p>
                 </div>
             </div>
         </div>
@@ -237,8 +240,8 @@
                 <div>
                     <h4 class="text-white font-medium mb-2">🔐 Güvenlik</h4>
                     <ul class="text-gray-400 text-sm space-y-1">
-                        <li>• Token'ınızı güvenli tutun</li>
-                        <li>• Public repositorylerde paylaşmayın</li>
+                        <li>• UUID'nizi güvenli tutun</li>
+                        <li>• Project ID hashli olarak gelir</li>
                         <li>• HTTPS kullanın (production'da)</li>
                     </ul>
                 </div>
@@ -264,9 +267,10 @@
                 <div>
                     <h4 class="text-white font-medium mb-2">🛠️ Hata Kodları</h4>
                     <ul class="text-gray-400 text-sm space-y-1">
-                        <li>• 401: Geçersiz token</li>
+                        <li>• 404: Kullanıcı bulunamadı</li>
                         <li>• 402: Yetersiz coin</li>
-                        <li>• 429: Rate limit aşımı</li>
+                        <li>• 403: Proje erişim yok</li>
+                        <li>• 400: Geçersiz project_id</li>
                         <li>• 500: Sunucu hatası</li>
                     </ul>
                 </div>

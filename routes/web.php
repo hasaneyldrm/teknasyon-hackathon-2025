@@ -40,6 +40,9 @@ Route::prefix('admin')->group(function () {
     
     // Documentation Routes
     Route::get('/docs', [ChatController::class, 'docs'])->name('admin.docs');
+    
+    // Helper route for project hash
+    Route::get('/project-hash/{id}', [ChatController::class, 'getProjectHash'])->name('admin.project.hash');
 });
 
 // Documentation route
@@ -48,7 +51,7 @@ Route::get('/docs', [ChatController::class, 'documentation'])->name('docs');
 // API Routes for external usage
 Route::prefix('api')->group(function () {
     Route::post('/users', [ChatController::class, 'createUserAPI'])->name('api.users.create');
-    Route::get('/users/{token}', [ChatController::class, 'getUserAPI'])->name('api.users.get');
+    Route::get('/users/{uuid}', [ChatController::class, 'getUserAPI'])->name('api.users.get');
     Route::post('/chat', [ChatController::class, 'chatAPI'])->name('api.chat');
 });
 

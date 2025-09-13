@@ -136,6 +136,48 @@ class ChatController extends Controller
                substr(md5($identifier), 20, 12);
     }
 
+    /**
+     * Project ID'yi encode eder (hash'ler)
+     */
+    private function encodeProjectId($projectId): string
+    {
+        $salt = config('app.key', 'default-salt');
+        return base64_encode(hash_hmac('sha256', $projectId, $salt));
+    }
+
+    /**
+     * Hash'lenmiş project ID'yi decode eder
+     */
+    private function decodeProjectId($hashedProjectId): ?int
+    {
+        try {
+            $salt = config('app.key', 'default-salt');
+            $decoded = base64_decode($hashedProjectId);
+            
+            // Tüm aktif projeleri kontrol et
+            $projects = \App\Models\Project::where('is_active', true)->get();
+            
+            foreach ($projects as $project) {
+                $expectedHash = hash_hmac('sha256', $project->id, $salt);
+                if (hash_equals($expectedHash, $decoded)) {
+                    return $project->id;
+                }
+            }
+            
+            return null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Project ID'den hash oluşturur (admin için helper)
+     */
+    public function getProjectHash($projectId): string
+    {
+        return $this->encodeProjectId($projectId);
+    }
+
 
 
     public function dashboard()
@@ -612,32 +654,49 @@ class ChatController extends Controller
     public function createUserAPI(Request $request)
     {
         $request->validate([
+            'uuid' => 'required|string|unique:users,uuid',
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'project_id' => 'nullable|integer|exists:projects,id',
+            'project_id' => 'required|string', // Hashli project_id gelecek
         ]);
 
         try {
+            // Project ID'yi hash'den çözümle
+            $decodedProjectId = $this->decodeProjectId($request->project_id);
+            
+            if (!$decodedProjectId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Geçersiz proje ID\'si'
+                ], 400);
+            }
+
+            // Projenin var olup olmadığını kontrol et
+            $project = \App\Models\Project::find($decodedProjectId);
+            if (!$project || !$project->is_active) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Proje bulunamadı veya aktif değil'
+                ], 400);
+            }
+
             $user = \App\Models\User::create([
+                'uuid' => $request->uuid,
                 'name' => $request->name,
-                'email' => $request->email,
-                'password' => \Hash::make($request->password),
-                'project_id' => $request->project_id ?? 1, // Default project
+                'project_id' => $decodedProjectId,
                 'coin' => 100, // Default coin amount
+                'email' => $request->uuid . '@generated.local', // Dummy email
+                'password' => \Hash::make(Str::random(32)), // Random password
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Kullanıcı başarıyla oluşturuldu',
                 'data' => [
-                    'id' => $user->id,
                     'uuid' => $user->uuid,
-                    'token' => $user->token,
                     'name' => $user->name,
-                    'email' => $user->email,
                     'coin' => $user->coin,
-                    'project_id' => $user->project_id,
+                    'project_id' => $request->project_id, // Hashli halini döndür
+                    'project_name' => $project->name,
                     'created_at' => $user->created_at,
                 ]
             ], 201);
@@ -651,10 +710,10 @@ class ChatController extends Controller
         }
     }
 
-    public function getUserAPI($token)
+    public function getUserAPI($uuid)
     {
         try {
-            $user = \App\Models\User::where('token', $token)->with('project')->first();
+            $user = \App\Models\User::where('uuid', $uuid)->with('project')->first();
             
             if (!$user) {
                 return response()->json([
@@ -666,13 +725,11 @@ class ChatController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'id' => $user->id,
                     'uuid' => $user->uuid,
                     'name' => $user->name,
-                    'email' => $user->email,
                     'coin' => $user->coin,
-                    'project_id' => $user->project_id,
-                    'project' => $user->project,
+                    'project_id' => $this->encodeProjectId($user->project_id), // Hashli döndür
+                    'project_name' => $user->project->name ?? 'Bilinmeyen Proje',
                     'created_at' => $user->created_at,
                 ]
             ]);
@@ -690,19 +747,19 @@ class ChatController extends Controller
     {
         $request->validate([
             'message' => 'required|string|max:1000',
-            'user_token' => 'required|string',
-            'project_id' => 'nullable|integer|exists:projects,id',
+            'uuid' => 'required|string',
+            'project_id' => 'required|string', // Hashli project_id gelecek
         ]);
 
         try {
-            // Find user by token
-            $user = \App\Models\User::where('token', $request->user_token)->first();
+            // Find user by UUID
+            $user = \App\Models\User::where('uuid', $request->uuid)->first();
             
             if (!$user) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Geçersiz kullanıcı token\'ı'
-                ], 401);
+                    'message' => 'Kullanıcı bulunamadı'
+                ], 404);
             }
 
             // Check user's coin balance
@@ -713,13 +770,30 @@ class ChatController extends Controller
                 ], 402);
             }
 
-            $projectId = $request->project_id ?? $user->project_id ?? 1;
-            $project = \App\Models\Project::find($projectId);
+            // Project ID'yi hash'den çözümle
+            $decodedProjectId = $this->decodeProjectId($request->project_id);
+            
+            if (!$decodedProjectId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Geçersiz proje ID\'si'
+                ], 400);
+            }
+
+            // Kullanıcının bu projeye erişimi var mı kontrol et
+            if ($user->project_id != $decodedProjectId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bu projeye erişim yetkiniz yok'
+                ], 403);
+            }
+
+            $project = \App\Models\Project::find($decodedProjectId);
 
             if (!$project || !$project->is_active) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Geçersiz veya aktif olmayan proje'
+                    'message' => 'Proje aktif değil'
                 ], 400);
             }
 
@@ -751,7 +825,7 @@ class ChatController extends Controller
             $reply = $response->choices[0]->message->content;
             $tokensUsed = $response->usage->total_tokens ?? 0;
 
-            // Deduct coin from user
+            // Başarılı istek - 1 coin düş
             $user->decrement('coin', 1);
 
             $conversationId = $request->input('conversation_id', Str::uuid());
@@ -759,7 +833,7 @@ class ChatController extends Controller
             // Save to database
             ChatMessage::create([
                 'user_uuid' => $user->uuid,
-                'project_id' => $projectId,
+                'project_id' => $decodedProjectId,
                 'message' => $request->message,
                 'response' => $reply,
                 'conversation_id' => $conversationId,
@@ -772,11 +846,11 @@ class ChatController extends Controller
             // Log the request
             \App\Models\RequestLog::create([
                 'user_uuid' => $user->uuid,
-                'project_id' => $projectId,
+                'project_id' => $decodedProjectId,
                 'ip_address' => $request->ip(),
                 'method' => 'POST',
                 'path' => '/api/chat',
-                'request_data' => json_encode(['message' => $request->message]),
+                'request_data' => json_encode(['message' => $request->message, 'uuid' => $request->uuid]),
                 'response_code' => 200,
                 'response_data' => json_encode(['success' => true, 'tokens_used' => $tokensUsed]),
                 'response_time' => intval($responseTime * 1000),
@@ -791,7 +865,7 @@ class ChatController extends Controller
                     'conversation_id' => $conversationId,
                     'tokens_used' => $tokensUsed,
                     'response_time' => round($responseTime, 3),
-                    'remaining_coins' => $user->coin,
+                    'remaining_coins' => $user->fresh()->coin, // Fresh data
                     'model' => $project->model ?? 'gpt-3.5-turbo',
                 ]
             ]);
@@ -800,12 +874,12 @@ class ChatController extends Controller
             // Log error
             try {
                 \App\Models\RequestLog::create([
-                    'user_uuid' => $user->uuid ?? 'unknown',
-                    'project_id' => $request->project_id ?? 1,
+                    'user_uuid' => $request->uuid ?? 'unknown',
+                    'project_id' => $this->decodeProjectId($request->project_id ?? '') ?? 0,
                     'ip_address' => $request->ip(),
                     'method' => 'POST',
                     'path' => '/api/chat',
-                    'request_data' => json_encode(['message' => $request->message]),
+                    'request_data' => json_encode(['message' => $request->message, 'uuid' => $request->uuid]),
                     'response_code' => 500,
                     'response_data' => json_encode(['error' => $e->getMessage()]),
                     'response_time' => 0,
