@@ -94,7 +94,9 @@
                         <tr class="border-b border-gray-700">
                             <th class="text-left py-3 px-4 text-gray-400 font-medium">Kullanıcı</th>
                             <th class="text-left py-3 px-4 text-gray-400 font-medium">Email</th>
-                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Durum</th>
+                            <th class="text-left py-3 px-4 text-gray-400 font-medium">UUID</th>
+                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Coin</th>
+                            <th class="text-left py-3 px-4 text-gray-400 font-medium">Uygulama</th>
                             <th class="text-left py-3 px-4 text-gray-400 font-medium">Kayıt Tarihi</th>
                             <th class="text-left py-3 px-4 text-gray-400 font-medium">İşlemler</th>
                         </tr>
@@ -112,10 +114,18 @@
                             </td>
                             <td class="py-3 px-4 text-gray-300">{{ $user->email }}</td>
                             <td class="py-3 px-4">
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-                                    @if($user->email_verified_at) bg-green-500/20 text-green-400
-                                    @else bg-yellow-500/20 text-yellow-400 @endif">
-                                    {{ $user->email_verified_at ? 'Doğrulandı' : 'Bekliyor' }}
+                                <code class="bg-gray-800 text-blue-400 px-2 py-1 rounded text-xs">
+                                    {{ $user->uuid ? substr($user->uuid, 0, 8) . '...' : 'N/A' }}
+                                </code>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-400">
+                                    {{ number_format($user->coin ?? 0) }} coin
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="text-gray-300 text-sm">
+                                    {{ $user->app_source ?? 'Bilinmiyor' }}
                                 </span>
                             </td>
                             <td class="py-3 px-4 text-gray-400">

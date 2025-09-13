@@ -89,6 +89,42 @@
                            required>
                 </div>
 
+                <!-- Coin Field -->
+                <div class="mb-6">
+                    <label for="coin" class="block text-sm font-medium text-gray-300 mb-2">
+                        Başlangıç Coin Miktarı
+                    </label>
+                    <input type="number" 
+                           id="coin" 
+                           name="coin" 
+                           value="{{ old('coin', 0) }}"
+                           min="0"
+                           class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="0">
+                    @error('coin')
+                        <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- App Source Field -->
+                <div class="mb-6">
+                    <label for="app_source" class="block text-sm font-medium text-gray-300 mb-2">
+                        Uygulama Kaynağı
+                    </label>
+                    <select id="app_source" 
+                            name="app_source"
+                            class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <option value="">Uygulama seçin</option>
+                        <option value="ios" {{ old('app_source') == 'ios' ? 'selected' : '' }}>iOS App</option>
+                        <option value="android" {{ old('app_source') == 'android' ? 'selected' : '' }}>Android App</option>
+                        <option value="web" {{ old('app_source') == 'web' ? 'selected' : '' }}>Web App</option>
+                        <option value="api" {{ old('app_source') == 'api' ? 'selected' : '' }}>API</option>
+                    </select>
+                    @error('app_source')
+                        <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Email Verified Checkbox -->
                 <div class="mb-8">
                     <label class="flex items-center">

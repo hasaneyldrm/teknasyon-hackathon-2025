@@ -82,6 +82,61 @@
                         </div>
                         
                         <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">UUID</label>
+                            <div class="text-white">
+                                <code class="bg-gray-800 text-blue-400 px-2 py-1 rounded text-sm">
+                                    {{ $user->uuid ?? 'Henüz oluşturulmadı' }}
+                                </code>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Coin Bakiyesi</label>
+                            <div class="text-white">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-500/20 text-yellow-400">
+                                    {{ number_format($user->coin ?? 0) }} coin
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">API Token</label>
+                            <div class="text-white">
+                                <code class="bg-gray-800 text-green-400 px-2 py-1 rounded text-sm">
+                                    {{ $user->token ? substr($user->token, 0, 16) . '...' : 'Henüz oluşturulmadı' }}
+                                </code>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Uygulama Kaynağı</label>
+                            <div class="text-white">
+                                @if($user->app_source)
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-500/20 text-blue-400">
+                                        @switch($user->app_source)
+                                            @case('ios')
+                                                📱 iOS App
+                                                @break
+                                            @case('android')
+                                                🤖 Android App
+                                                @break
+                                            @case('web')
+                                                🌐 Web App
+                                                @break
+                                            @case('api')
+                                                🔧 API
+                                                @break
+                                            @default
+                                                {{ $user->app_source }}
+                                        @endswitch
+                                    </span>
+                                @else
+                                    <span class="text-gray-400">Bilinmiyor</span>
+                                @endif
+                            </div>
+                        </div>
+                        
+                        <div>
                             <label class="block text-sm font-medium text-gray-400 mb-2">Email Doğrulama Tarihi</label>
                             <div class="text-white">
                                 {{ $user->email_verified_at ? $user->email_verified_at->format('d.m.Y H:i') : 'Henüz doğrulanmadı' }}
@@ -181,6 +236,16 @@
                     <div class="flex items-center justify-between">
                         <span class="text-gray-400">Kullanıcı ID:</span>
                         <span class="text-white font-medium">#{{ $user->id }}</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400">UUID:</span>
+                        <span class="text-white font-medium text-xs">{{ $user->uuid ? substr($user->uuid, 0, 8) . '...' : 'N/A' }}</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-400">Coin Bakiyesi:</span>
+                        <span class="text-yellow-400 font-medium">{{ number_format($user->coin ?? 0) }}</span>
                     </div>
                     
                     <div class="flex items-center justify-between">

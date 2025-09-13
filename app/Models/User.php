@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -22,6 +23,10 @@ class User extends Authenticatable
         'email',
         'password',
         'email_verified_at',
+        'uuid',
+        'coin',
+        'token',
+        'app_source',
     ];
 
     /**
@@ -44,11 +49,29 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'coin' => 'integer',
         ];
     }
 
     public function projects()
     {
         return $this->hasMany(\App\Models\Project::class);
+    }
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            if (empty($user->uuid)) {
+                $user->uuid = Str::uuid();
+            }
+            if (empty($user->token)) {
+                $user->token = Str::random(32);
+            }
+        });
     }
 }
