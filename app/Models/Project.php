@@ -23,12 +23,16 @@ class Project extends Model
         'model',
         'is_active',
         'user_id',
+        'enable_fallback',
+        'fallback_order',
     ];
 
     protected $casts = [
         'max_token' => 'integer',
         'temperature' => 'float',
         'is_active' => 'boolean',
+        'enable_fallback' => 'boolean',
+        'fallback_order' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -100,5 +104,50 @@ class Project extends Model
     public function getRecentMessagesAttribute()
     {
         return $this->chatMessages()->where('created_at', '>=', now()->subDays(30))->count();
+    }
+
+    public function getAvailableModels()
+    {
+        return [
+            'gpt-3.5-turbo' => 'GPT-3.5 Turbo',
+            'gpt-4' => 'GPT-4',
+            'gpt-4-turbo' => 'GPT-4 Turbo',
+            'gemini-pro' => 'Gemini Pro',
+            'claude-3-sonnet' => 'Claude 3 Sonnet',
+            'claude-3-haiku' => 'Claude 3 Haiku',
+        ];
+    }
+
+    public function getDefaultFallbackOrder()
+    {
+        $primary = $this->model;
+        $fallbacks = [];
+        
+        // Primary model'e göre fallback sırası belirle
+        switch ($primary) {
+            case 'gpt-3.5-turbo':
+            case 'gpt-4':
+            case 'gpt-4-turbo':
+                $fallbacks = ['gemini-pro', 'claude-3-sonnet', 'claude-3-haiku'];
+                break;
+            case 'gemini-pro':
+                $fallbacks = ['gpt-3.5-turbo', 'claude-3-sonnet', 'gpt-4'];
+                break;
+            case 'claude-3-sonnet':
+            case 'claude-3-haiku':
+                $fallbacks = ['gpt-3.5-turbo', 'gemini-pro', 'gpt-4'];
+                break;
+        }
+        
+        return $fallbacks;
+    }
+
+    public function getFallbackOrderAttribute($value)
+    {
+        if ($value) {
+            return json_decode($value, true);
+        }
+        
+        return $this->getDefaultFallbackOrder();
     }
 }

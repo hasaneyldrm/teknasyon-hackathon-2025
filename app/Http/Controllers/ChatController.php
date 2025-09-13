@@ -273,10 +273,11 @@ class ChatController extends Controller
             'description' => 'nullable|string|max:1000',
             'api_key' => 'nullable|string',
             'gemini_key' => 'nullable|string',
-            'model' => 'required|string|in:gpt-3.5-turbo,gpt-4,gpt-4-turbo,gemini-pro',
+            'model' => 'required|string|in:gpt-3.5-turbo,gpt-4,gpt-4-turbo,gemini-pro,claude-3-sonnet,claude-3-haiku',
             'temperature' => 'required|numeric|between:0,1',
             'max_token' => 'required|integer|between:1,4000',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'fallback_order' => 'nullable|array',
         ]);
 
         $userId = 1; // For now, use default user ID
@@ -284,6 +285,8 @@ class ChatController extends Controller
         $data = $request->only(['name', 'description', 'api_key', 'gemini_key', 'model', 'temperature', 'max_token']);
         $data['user_id'] = $userId;
         $data['is_active'] = $request->has('is_active');
+        $data['enable_fallback'] = $request->has('enable_fallback');
+        $data['fallback_order'] = $request->fallback_order;
 
         // Handle logo upload
         if ($request->hasFile('logo')) {
@@ -329,14 +332,17 @@ class ChatController extends Controller
             'description' => 'nullable|string|max:1000',
             'api_key' => 'nullable|string',
             'gemini_key' => 'nullable|string',
-            'model' => 'required|string|in:gpt-3.5-turbo,gpt-4,gpt-4-turbo,gemini-pro',
+            'model' => 'required|string|in:gpt-3.5-turbo,gpt-4,gpt-4-turbo,gemini-pro,claude-3-sonnet,claude-3-haiku',
             'temperature' => 'required|numeric|between:0,1',
             'max_token' => 'required|integer|between:1,4000',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'fallback_order' => 'nullable|array',
         ]);
 
         $data = $request->only(['name', 'description', 'model', 'temperature', 'max_token']);
         $data['is_active'] = $request->has('is_active');
+        $data['enable_fallback'] = $request->has('enable_fallback');
+        $data['fallback_order'] = $request->fallback_order;
 
         // Only update API keys if they are provided
         if ($request->filled('api_key')) {

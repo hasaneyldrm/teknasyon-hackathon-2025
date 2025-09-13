@@ -79,6 +79,8 @@
                                     <option value="gpt-4" {{ old('model') == 'gpt-4' ? 'selected' : '' }}>GPT-4</option>
                                     <option value="gpt-4-turbo" {{ old('model') == 'gpt-4-turbo' ? 'selected' : '' }}>GPT-4 Turbo</option>
                                     <option value="gemini-pro" {{ old('model') == 'gemini-pro' ? 'selected' : '' }}>Gemini Pro</option>
+                                    <option value="claude-3-sonnet" {{ old('model') == 'claude-3-sonnet' ? 'selected' : '' }}>Claude 3 Sonnet</option>
+                                    <option value="claude-3-haiku" {{ old('model') == 'claude-3-haiku' ? 'selected' : '' }}>Claude 3 Haiku</option>
                                 </select>
                                 @error('model')
                                     <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
@@ -86,7 +88,7 @@
                             </div>
 
                             <!-- Active Status -->
-                            <div class="flex items-center">
+                            <div class="space-y-3">
                                 <label class="flex items-center">
                                     <input type="checkbox" 
                                            name="is_active" 
@@ -95,6 +97,20 @@
                                            class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2">
                                     <span class="ml-2 text-gray-300">Projeyi aktif olarak başlat</span>
                                 </label>
+                                
+                                <label class="flex items-center">
+                                    <input type="checkbox" 
+                                           name="enable_fallback" 
+                                           value="1"
+                                           id="enable_fallback"
+                                           {{ old('enable_fallback') ? 'checked' : '' }}
+                                           class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+                                           onchange="toggleFallbackSettings()">
+                                    <span class="ml-2 text-gray-300">Akıllı Fallback Sistemi</span>
+                                </label>
+                                <p class="text-gray-400 text-xs ml-6">
+                                    💡 API limitine takılırsa otomatik olarak diğer AI modellerine geçer
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -141,6 +157,27 @@
                                 @error('max_token')
                                     <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
                                 @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fallback Configuration -->
+                    <div class="card rounded-xl p-6 shadow-sm" id="fallback-settings" style="display: none;">
+                        <h3 class="text-lg font-semibold text-white mb-6">Fallback Sıralaması</h3>
+                        
+                        <div class="space-y-4">
+                            <p class="text-gray-400 text-sm mb-4">
+                                Primary model başarısız olursa hangi sırayla diğer modellere geçilsin?
+                            </p>
+                            
+                            <div id="fallback-order-list" class="space-y-3">
+                                <!-- JavaScript ile doldurulacak -->
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="button" onclick="resetToDefault()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    Varsayılan Sıralama
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -269,6 +306,88 @@
 </div>
 
 <script>
+const models = {
+    'gpt-3.5-turbo': 'GPT-3.5 Turbo',
+    'gpt-4': 'GPT-4',
+    'gpt-4-turbo': 'GPT-4 Turbo',
+    'gemini-pro': 'Gemini Pro',
+    'claude-3-sonnet': 'Claude 3 Sonnet',
+    'claude-3-haiku': 'Claude 3 Haiku'
+};
+
+const defaultFallbacks = {
+    'gpt-3.5-turbo': ['gemini-pro', 'claude-3-sonnet', 'claude-3-haiku'],
+    'gpt-4': ['gemini-pro', 'claude-3-sonnet', 'claude-3-haiku'],
+    'gpt-4-turbo': ['gemini-pro', 'claude-3-sonnet', 'claude-3-haiku'],
+    'gemini-pro': ['gpt-3.5-turbo', 'claude-3-sonnet', 'gpt-4'],
+    'claude-3-sonnet': ['gpt-3.5-turbo', 'gemini-pro', 'gpt-4'],
+    'claude-3-haiku': ['gpt-3.5-turbo', 'gemini-pro', 'gpt-4']
+};
+
+function toggleFallbackSettings() {
+    const checkbox = document.getElementById('enable_fallback');
+    const settings = document.getElementById('fallback-settings');
+    
+    if (checkbox.checked) {
+        settings.style.display = 'block';
+        updateFallbackOrder();
+    } else {
+        settings.style.display = 'none';
+    }
+}
+
+function updateFallbackOrder() {
+    const primaryModel = document.getElementById('model').value;
+    if (!primaryModel) return;
+    
+    const fallbacks = defaultFallbacks[primaryModel] || [];
+    const container = document.getElementById('fallback-order-list');
+    
+    container.innerHTML = '';
+    
+    fallbacks.forEach((model, index) => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between p-3 bg-gray-700 rounded-lg';
+        div.innerHTML = `
+            <div class="flex items-center gap-3">
+                <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium">${index + 1}</span>
+                <span class="text-white">${models[model]}</span>
+            </div>
+            <div class="flex gap-2">
+                <button type="button" onclick="moveFallback(${index}, -1)" ${index === 0 ? 'disabled' : ''} class="p-1 text-gray-400 hover:text-white disabled:opacity-50">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 12l-4-4h8l-4 4z"/>
+                    </svg>
+                </button>
+                <button type="button" onclick="moveFallback(${index}, 1)" ${index === fallbacks.length - 1 ? 'disabled' : ''} class="p-1 text-gray-400 hover:text-white disabled:opacity-50">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 4l4 4H4l4-4z"/>
+                    </svg>
+                </button>
+            </div>
+            <input type="hidden" name="fallback_order[]" value="${model}">
+        `;
+        container.appendChild(div);
+    });
+}
+
+function moveFallback(index, direction) {
+    const container = document.getElementById('fallback-order-list');
+    const items = Array.from(container.children);
+    
+    if (direction === -1 && index > 0) {
+        container.insertBefore(items[index], items[index - 1]);
+    } else if (direction === 1 && index < items.length - 1) {
+        container.insertBefore(items[index + 1], items[index]);
+    }
+    
+    updateFallbackOrder();
+}
+
+function resetToDefault() {
+    updateFallbackOrder();
+}
+
 function previewLogo(input) {
     const preview = document.getElementById('logo-preview');
     
@@ -282,5 +401,12 @@ function previewLogo(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+// Model değiştiğinde fallback sıralamasını güncelle
+document.getElementById('model').addEventListener('change', function() {
+    if (document.getElementById('enable_fallback').checked) {
+        updateFallbackOrder();
+    }
+});
 </script>
 @endsection
