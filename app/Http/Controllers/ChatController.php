@@ -410,6 +410,8 @@ class ChatController extends Controller
 
     public function updateProject(Request $request, $id)
     {
+        \Log::info('updateProject method called', ['id' => $id, 'method' => $request->method()]);
+        
         $project = \App\Models\Project::findOrFail($id);
         
         // Debug: Log the request data
@@ -474,6 +476,8 @@ class ChatController extends Controller
 
     public function destroyProject($id)
     {
+        \Log::warning('destroyProject method called - PROJECT BEING DELETED!', ['id' => $id]);
+        
         $project = \App\Models\Project::findOrFail($id);
         
         // Delete logo if exists

@@ -356,28 +356,30 @@
                             </a>
                         </div>
                     </div>
-
-                    <!-- Danger Zone -->
-                    <div class="card rounded-xl p-6 shadow-sm border border-red-500/20">
-                        <h4 class="text-red-400 font-medium mb-3">⚠️ Tehlikeli Bölge</h4>
-                        <p class="text-gray-400 text-sm mb-4">
-                            Bu projeyi silerseniz tüm mesajlar ve veriler kalıcı olarak silinecektir.
-                        </p>
-                        <form method="POST" action="{{ route('admin.projects.destroy', $project->id) }}" onsubmit="return confirm('Bu projeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="3,6 5,6 21,6"></polyline>
-                                    <path d="m19,6v14a2,2 0 0,1-2,2H7a2,2 0 0,1-2-2V6m3,0V4a2,2 0 0,1,2-2h4a2,2 0 0,1,2,2v2"></path>
-                                </svg>
-                                Projeyi Sil
-                            </button>
-                        </form>
-                    </div>
                 </div>
             </div>
         </form>
+
+        <!-- Danger Zone - OUTSIDE main form -->
+        <div class="max-w-4xl mx-auto mt-6">
+            <div class="card rounded-xl p-6 shadow-sm border border-red-500/20">
+                <h4 class="text-red-400 font-medium mb-3">⚠️ Tehlikeli Bölge</h4>
+                <p class="text-gray-400 text-sm mb-4">
+                    Bu projeyi silerseniz tüm mesajlar ve veriler kalıcı olarak silinecektir.
+                </p>
+                <form method="POST" action="{{ route('admin.projects.destroy', $project->id) }}" onsubmit="return confirm('Bu projeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3,6 5,6 21,6"></polyline>
+                            <path d="m19,6v14a2,2 0 0,1-2,2H7a2,2 0 0,1-2-2V6m3,0V4a2,2 0 0,1,2-2h4a2,2 0 0,1,2,2v2"></path>
+                        </svg>
+                        Projeyi Sil
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
