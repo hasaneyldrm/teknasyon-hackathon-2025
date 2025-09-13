@@ -197,6 +197,33 @@
                             </a>
                         </li>
                         <li class="group/menu-item relative">
+                            <a href="/admin/users" class="sidebar-item flex w-full items-center cursor-pointer gap-2 overflow-hidden rounded-md p-2 text-left transition-all hover:bg-gray-700 h-8 text-sm {{ request()->is('admin/users') ? 'active bg-gray-700' : '' }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                    <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
+                                </svg>
+                                <span>Kullanıcılar</span>
+                            </a>
+                        </li>
+                        <li class="group/menu-item relative">
+                            <a href="/admin/projects" class="sidebar-item flex w-full items-center cursor-pointer gap-2 overflow-hidden rounded-md p-2 text-left transition-all hover:bg-gray-700 h-8 text-sm {{ request()->is('admin/projects') ? 'active bg-gray-700' : '' }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 4h5l2 2h5a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path>
+                                </svg>
+                                <span>Projeler</span>
+                            </a>
+                        </li>
+                        <li class="group/menu-item relative">
+                            <a href="/admin/security" class="sidebar-item flex w-full items-center cursor-pointer gap-2 overflow-hidden rounded-md p-2 text-left transition-all hover:bg-gray-700 h-8 text-sm {{ request()->is('admin/security') ? 'active bg-gray-700' : '' }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                </svg>
+                                <span>Güvenlik</span>
+                            </a>
+                        </li>
+                        <li class="group/menu-item relative">
                             <a href="/history" class="sidebar-item flex w-full items-center cursor-pointer gap-2 overflow-hidden rounded-md p-2 text-left transition-all hover:bg-gray-700 h-8 text-sm {{ request()->is('history') ? 'active bg-gray-700' : '' }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
