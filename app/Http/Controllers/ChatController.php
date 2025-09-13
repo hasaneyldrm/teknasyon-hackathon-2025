@@ -597,4 +597,226 @@ class ChatController extends Controller
             'monthlyActivity'
         ));
     }
+
+    // API Methods for external usage
+    public function documentation()
+    {
+        return view('docs');
+    }
+
+    public function createUserAPI(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'project_id' => 'nullable|integer|exists:projects,id',
+        ]);
+
+        try {
+            $user = \App\Models\User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => \Hash::make($request->password),
+                'project_id' => $request->project_id ?? 1, // Default project
+                'coin' => 100, // Default coin amount
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kullanıcı başarıyla oluşturuldu',
+                'data' => [
+                    'id' => $user->id,
+                    'uuid' => $user->uuid,
+                    'token' => $user->token,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'coin' => $user->coin,
+                    'project_id' => $user->project_id,
+                    'created_at' => $user->created_at,
+                ]
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kullanıcı oluşturulurken hata oluştu',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getUserAPI($token)
+    {
+        try {
+            $user = \App\Models\User::where('token', $token)->with('project')->first();
+            
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kullanıcı bulunamadı'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $user->id,
+                    'uuid' => $user->uuid,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'coin' => $user->coin,
+                    'project_id' => $user->project_id,
+                    'project' => $user->project,
+                    'created_at' => $user->created_at,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kullanıcı bilgileri alınırken hata oluştu',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function chatAPI(Request $request)
+    {
+        $request->validate([
+            'message' => 'required|string|max:1000',
+            'user_token' => 'required|string',
+            'project_id' => 'nullable|integer|exists:projects,id',
+        ]);
+
+        try {
+            // Find user by token
+            $user = \App\Models\User::where('token', $request->user_token)->first();
+            
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Geçersiz kullanıcı token\'ı'
+                ], 401);
+            }
+
+            // Check user's coin balance
+            if ($user->coin <= 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Yetersiz coin bakiyesi'
+                ], 402);
+            }
+
+            $projectId = $request->project_id ?? $user->project_id ?? 1;
+            $project = \App\Models\Project::find($projectId);
+
+            if (!$project || !$project->is_active) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Geçersiz veya aktif olmayan proje'
+                ], 400);
+            }
+
+            $startTime = microtime(true);
+            
+            // Use project's API key or system default
+            $apiKey = $project->api_key ?? config('services.openai.key');
+            $openai = OpenAI::client($apiKey);
+            
+            $response = $openai->chat()->create([
+                'model' => $project->model ?? 'gpt-3.5-turbo',
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => $project->instructions ?? 'Sen yardımcı bir AI asistanısın. Türkçe konuş ve kullanıcılara yardımcı ol.'
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $request->message
+                    ]
+                ],
+                'max_tokens' => $project->max_token ?? 500,
+                'temperature' => $project->temperature ?? 0.7,
+            ]);
+
+            $endTime = microtime(true);
+            $responseTime = ($endTime - $startTime);
+            
+            $reply = $response->choices[0]->message->content;
+            $tokensUsed = $response->usage->total_tokens ?? 0;
+
+            // Deduct coin from user
+            $user->decrement('coin', 1);
+
+            $conversationId = $request->input('conversation_id', Str::uuid());
+
+            // Save to database
+            ChatMessage::create([
+                'user_uuid' => $user->uuid,
+                'project_id' => $projectId,
+                'message' => $request->message,
+                'response' => $reply,
+                'conversation_id' => $conversationId,
+                'model' => $project->model ?? 'gpt-3.5-turbo',
+                'tokens_used' => $tokensUsed,
+                'response_time' => $responseTime,
+                'type' => 'api',
+            ]);
+
+            // Log the request
+            \App\Models\RequestLog::create([
+                'user_uuid' => $user->uuid,
+                'project_id' => $projectId,
+                'ip_address' => $request->ip(),
+                'method' => 'POST',
+                'path' => '/api/chat',
+                'request_data' => json_encode(['message' => $request->message]),
+                'response_code' => 200,
+                'response_data' => json_encode(['success' => true, 'tokens_used' => $tokensUsed]),
+                'response_time' => intval($responseTime * 1000),
+                'user_agent' => $request->userAgent(),
+                'action' => 'api_chat_message',
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => $reply,
+                'data' => [
+                    'conversation_id' => $conversationId,
+                    'tokens_used' => $tokensUsed,
+                    'response_time' => round($responseTime, 3),
+                    'remaining_coins' => $user->coin,
+                    'model' => $project->model ?? 'gpt-3.5-turbo',
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            // Log error
+            try {
+                \App\Models\RequestLog::create([
+                    'user_uuid' => $user->uuid ?? 'unknown',
+                    'project_id' => $request->project_id ?? 1,
+                    'ip_address' => $request->ip(),
+                    'method' => 'POST',
+                    'path' => '/api/chat',
+                    'request_data' => json_encode(['message' => $request->message]),
+                    'response_code' => 500,
+                    'response_data' => json_encode(['error' => $e->getMessage()]),
+                    'response_time' => 0,
+                    'user_agent' => $request->userAgent(),
+                    'action' => 'api_chat_error',
+                    'error_message' => $e->getMessage(),
+                ]);
+            } catch (\Exception $logError) {
+                // Continue without breaking
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Chat isteği işlenirken hata oluştu',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

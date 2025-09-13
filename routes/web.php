@@ -39,7 +39,17 @@ Route::prefix('admin')->group(function () {
     Route::get('/history', [ChatController::class, 'history'])->name('admin.history');
 });
 
-// Chat API endpoint
+// Documentation route
+Route::get('/docs', [ChatController::class, 'documentation'])->name('docs');
+
+// API Routes for external usage
+Route::prefix('api')->group(function () {
+    Route::post('/users', [ChatController::class, 'createUserAPI'])->name('api.users.create');
+    Route::get('/users/{token}', [ChatController::class, 'getUserAPI'])->name('api.users.get');
+    Route::post('/chat', [ChatController::class, 'chatAPI'])->name('api.chat');
+});
+
+// Chat API endpoint (old endpoint for compatibility)
 Route::post('/chat', [ChatController::class, 'chat'])->name('chat.send');
 
 // History and other routes
