@@ -6,7 +6,7 @@
 <div class="chat-container">
     <div class="chat-header">
         <h1 class="brand-title mb-2" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-            <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="me-2" style="width: 32px; height: 32px; display: inline-block; vertical-align: middle;">
+            <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="me-2" style="width: 48px; height: 48px; display: inline-block; vertical-align: middle; border-radius: 8px;">
             GlobalGPT
         </h1>
         <p class="subtitle mb-0" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
@@ -16,7 +16,7 @@
     
     <div class="chat-messages" id="chatMessages">
         <div class="message assistant">
-            <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="me-2" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;">
+            <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="me-2" style="width: 28px; height: 28px; display: inline-block; vertical-align: middle; border-radius: 6px;">
             <span style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">Merhaba! Ben GlobalGPT, sizin AI asistanınızım. Size nasıl yardımcı olabilirim?</span>
         </div>
     </div>
@@ -73,7 +73,7 @@ $(document).ready(function() {
     // Add message to chat
     function addMessage(message, isUser = false) {
         const messageClass = isUser ? 'user' : 'assistant';
-        const icon = isUser ? '<i class="fas fa-user me-2"></i>' : '<img src="{{ asset("ggpt.png") }}" alt="GlobalGPT" class="me-2" style="width: 20px; height: 20px; display: inline-block; vertical-align: middle;">';
+        const icon = isUser ? '<i class="fas fa-user me-2"></i>' : '<img src="{{ asset("ggpt.png") }}" alt="GlobalGPT" class="me-2" style="width: 28px; height: 28px; display: inline-block; vertical-align: middle; border-radius: 6px;">';
         
         const messageHtml = `
             <div class="message ${messageClass}">

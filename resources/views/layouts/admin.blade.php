@@ -168,10 +168,9 @@
             <!-- Logo/Brand -->
             <div class="p-6 border-b border-gray-700">
                 <h1 class="text-xl font-bold text-white flex items-center" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-                    <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="w-8 h-8 mr-3">
+                    <img src="{{ asset('ggpt.png') }}" alt="GlobalGPT" class="w-12 h-12 mr-3 rounded-lg">
                     GlobalGPT
                 </h1>
-                <p class="text-sm text-gray-400 mt-1" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">AI Chat Assistant</p>
             </div>
 
             <!-- Sidebar Content -->
