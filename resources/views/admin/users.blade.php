@@ -124,9 +124,17 @@
                                 </span>
                             </td>
                             <td class="py-3 px-4">
-                                <span class="text-gray-300 text-sm">
-                                    {{ $user->app_source ?? 'Bilinmiyor' }}
-                                </span>
+                                @if($user->app_source)
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400">
+                                        @if($user->app_source == 'LogPress')
+                                            📰 {{ $user->app_source }}
+                                        @else
+                                            🔧 {{ $user->app_source }}
+                                        @endif
+                                    </span>
+                                @else
+                                    <span class="text-gray-400 text-sm">Bilinmiyor</span>
+                                @endif
                             </td>
                             <td class="py-3 px-4 text-gray-400">
                                 {{ $user->created_at->format('d.m.Y H:i') }}

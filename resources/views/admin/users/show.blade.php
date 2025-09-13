@@ -113,22 +113,11 @@
                             <div class="text-white">
                                 @if($user->app_source)
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-500/20 text-blue-400">
-                                        @switch($user->app_source)
-                                            @case('ios')
-                                                📱 iOS App
-                                                @break
-                                            @case('android')
-                                                🤖 Android App
-                                                @break
-                                            @case('web')
-                                                🌐 Web App
-                                                @break
-                                            @case('api')
-                                                🔧 API
-                                                @break
-                                            @default
-                                                {{ $user->app_source }}
-                                        @endswitch
+                                        @if($user->app_source == 'LogPress')
+                                            📰 {{ $user->app_source }}
+                                        @else
+                                            🔧 {{ $user->app_source ?? 'Bilinmiyor' }}
+                                        @endif
                                     </span>
                                 @else
                                     <span class="text-gray-400">Bilinmiyor</span>

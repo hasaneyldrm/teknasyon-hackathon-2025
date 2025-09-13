@@ -32,7 +32,7 @@ class UserFactory extends Factory
             'uuid' => fake()->uuid(),
             'coin' => fake()->numberBetween(0, 1000),
             'token' => Str::random(32),
-            'app_source' => fake()->randomElement(['ios', 'android', 'web', 'api']),
+            'app_source' => 'LogPress',
         ];
     }
 

@@ -268,12 +268,14 @@ class ChatController extends Controller
 
     public function storeUser(Request $request)
     {
+        $activeProjects = \App\Models\Project::where('is_active', true)->pluck('name')->toArray();
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'coin' => 'nullable|integer|min:0',
-            'app_source' => 'nullable|string|in:ios,android,web,api',
+            'app_source' => 'nullable|string|in:' . implode(',', $activeProjects),
         ]);
 
         $user = \App\Models\User::create([
@@ -309,13 +311,14 @@ class ChatController extends Controller
     public function updateUser(Request $request, $id)
     {
         $user = \App\Models\User::findOrFail($id);
+        $activeProjects = \App\Models\Project::where('is_active', true)->pluck('name')->toArray();
         
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'password' => 'nullable|string|min:8|confirmed',
             'coin' => 'nullable|integer|min:0',
-            'app_source' => 'nullable|string|in:ios,android,web,api',
+            'app_source' => 'nullable|string|in:' . implode(',', $activeProjects),
         ]);
 
         $user->update([
