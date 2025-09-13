@@ -272,6 +272,8 @@ class ChatController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'coin' => 'nullable|integer|min:0',
+            'app_source' => 'nullable|string|in:ios,android,web,api',
         ]);
 
         $user = \App\Models\User::create([
@@ -279,6 +281,8 @@ class ChatController extends Controller
             'email' => $request->email,
             'password' => \Hash::make($request->password),
             'email_verified_at' => $request->has('email_verified') ? now() : null,
+            'coin' => $request->coin ?? 0,
+            'app_source' => $request->app_source,
         ]);
 
         return redirect()->route('admin.users')->with('success', 'Kullanıcı başarıyla oluşturuldu!');
@@ -310,12 +314,16 @@ class ChatController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'password' => 'nullable|string|min:8|confirmed',
+            'coin' => 'nullable|integer|min:0',
+            'app_source' => 'nullable|string|in:ios,android,web,api',
         ]);
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
             'email_verified_at' => $request->has('email_verified') ? now() : null,
+            'coin' => $request->coin ?? 0,
+            'app_source' => $request->app_source,
         ]);
 
         if ($request->filled('password')) {
