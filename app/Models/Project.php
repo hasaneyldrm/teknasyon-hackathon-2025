@@ -16,10 +16,12 @@ class Project extends Model
         'api_key',
         'gemini_key',
         'max_token',
+        'max_tokens_limit',
         'image',
         'logo',
         'temperature',
         'description',
+        'instructions',
         'model',
         'is_active',
         'user_id',
@@ -29,6 +31,7 @@ class Project extends Model
 
     protected $casts = [
         'max_token' => 'integer',
+        'max_tokens_limit' => 'integer',
         'temperature' => 'float',
         'is_active' => 'boolean',
         'enable_fallback' => 'boolean',

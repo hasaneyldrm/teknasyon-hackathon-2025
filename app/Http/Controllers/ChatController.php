@@ -359,18 +359,20 @@ class ChatController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
+            'instructions' => 'required|string|max:5000',
             'api_key' => 'nullable|string',
             'gemini_key' => 'nullable|string',
             'model' => 'required|string|in:gpt-3.5-turbo,gpt-4,gpt-4-turbo,gemini-pro,claude-3-sonnet,claude-3-haiku',
             'temperature' => 'required|numeric|between:0,1',
             'max_token' => 'required|integer|between:1,4000',
+            'max_tokens_limit' => 'required|integer|between:100,10000',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'fallback_order' => 'nullable|array',
         ]);
 
         $userId = 1; // For now, use default user ID
 
-        $data = $request->only(['name', 'description', 'api_key', 'gemini_key', 'model', 'temperature', 'max_token']);
+        $data = $request->only(['name', 'description', 'instructions', 'api_key', 'gemini_key', 'model', 'temperature', 'max_token', 'max_tokens_limit']);
         $data['user_id'] = $userId;
         $data['is_active'] = $request->has('is_active');
         $data['enable_fallback'] = $request->has('enable_fallback');
@@ -418,16 +420,18 @@ class ChatController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
+            'instructions' => 'required|string|max:5000',
             'api_key' => 'nullable|string',
             'gemini_key' => 'nullable|string',
             'model' => 'required|string|in:gpt-3.5-turbo,gpt-4,gpt-4-turbo,gemini-pro,claude-3-sonnet,claude-3-haiku',
             'temperature' => 'required|numeric|between:0,1',
             'max_token' => 'required|integer|between:1,4000',
+            'max_tokens_limit' => 'required|integer|between:100,10000',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'fallback_order' => 'nullable|array',
         ]);
 
-        $data = $request->only(['name', 'description', 'model', 'temperature', 'max_token']);
+        $data = $request->only(['name', 'description', 'instructions', 'model', 'temperature', 'max_token', 'max_tokens_limit']);
         $data['is_active'] = $request->has('is_active');
         $data['enable_fallback'] = $request->has('enable_fallback');
         $data['fallback_order'] = $request->fallback_order;

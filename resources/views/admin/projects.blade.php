@@ -120,6 +120,18 @@
                         <span class="text-white">{{ number_format($project->max_token) }}</span>
                     </div>
                     <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-400">Token Limiti:</span>
+                        <span class="text-white">{{ number_format($project->max_tokens_limit ?? 1000) }}</span>
+                    </div>
+                    @if($project->instructions)
+                    <div class="flex items-start justify-between text-sm">
+                        <span class="text-gray-400">Talimatlar:</span>
+                        <span class="text-white text-right text-xs max-w-32 truncate" title="{{ $project->instructions }}">
+                            {{ Str::limit($project->instructions, 30) }}
+                        </span>
+                    </div>
+                    @endif
+                    <div class="flex items-center justify-between text-sm">
                         <span class="text-gray-400">OpenAI Key:</span>
                         <span class="{{ $project->api_key ? 'text-green-400' : 'text-red-400' }}">
                             {{ $project->api_key ? '✓ Var' : '✗ Yok' }}

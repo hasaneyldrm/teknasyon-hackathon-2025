@@ -85,6 +85,23 @@
                                 @enderror
                             </div>
 
+                            <!-- Instructions -->
+                            <div class="md:col-span-2">
+                                <label for="instructions" class="block text-sm font-medium text-gray-300 mb-2">
+                                    Sistem Talimatları <span class="text-red-400">*</span>
+                                </label>
+                                <textarea id="instructions" 
+                                          name="instructions" 
+                                          rows="5"
+                                          class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                          placeholder="Yapay zekaya verilecek sistem talimatlarını yazın..."
+                                          required>{{ old('instructions', $project->instructions) }}</textarea>
+                                <p class="text-gray-400 text-xs mt-1">Bu talimatlar her sohbette yapay zekaya önceden verilir (pre-prompt)</p>
+                                @error('instructions')
+                                    <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <!-- Model Selection -->
                             <div>
                                 <label for="model" class="block text-sm font-medium text-gray-300 mb-2">
@@ -175,6 +192,25 @@
                                        required>
                                 <p class="text-gray-400 text-xs mt-1">1 - 4000 arası (Maksimum yanıt uzunluğu)</p>
                                 @error('max_token')
+                                    <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Token Limit -->
+                            <div>
+                                <label for="max_tokens_limit" class="block text-sm font-medium text-gray-300 mb-2">
+                                    Token Tüketim Limiti <span class="text-red-400">*</span>
+                                </label>
+                                <input type="number" 
+                                       id="max_tokens_limit" 
+                                       name="max_tokens_limit" 
+                                       value="{{ old('max_tokens_limit', $project->max_tokens_limit ?? 1000) }}"
+                                       min="100" 
+                                       max="10000"
+                                       class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       required>
+                                <p class="text-gray-400 text-xs mt-1">100 - 10000 arası (Kullanıcı ne kadar token tüketebilir)</p>
+                                @error('max_tokens_limit')
                                     <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
