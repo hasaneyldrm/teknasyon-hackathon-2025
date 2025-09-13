@@ -15,6 +15,7 @@ Route::get('/old', [ChatController::class, 'index'])->name('chat.index');
 Route::prefix('admin')->group(function () {
     Route::get('/', [ChatController::class, 'admin'])->name('admin.chat');
     Route::get('/dashboard', [ChatController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/dashboard/data', [ChatController::class, 'dashboardData'])->name('admin.dashboard.data');
     Route::get('/users', [ChatController::class, 'users'])->name('admin.users');
     Route::get('/projects', [ChatController::class, 'projects'])->name('admin.projects');
     Route::get('/security', [ChatController::class, 'security'])->name('admin.security');
