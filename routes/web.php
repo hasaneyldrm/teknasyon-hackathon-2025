@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
 
-// Default route - redirect to admin chat
+// Default route - redirect to admin dashboard
 Route::get('/', function () {
-    return redirect('/admin');
+    return redirect('/admin/dashboard');
 });
 
 // Old chat interface (keep for compatibility)
@@ -13,7 +13,7 @@ Route::get('/old', [ChatController::class, 'index'])->name('chat.index');
 
 // Admin Panel Routes
 Route::prefix('admin')->group(function () {
-    Route::get('/', [ChatController::class, 'admin'])->name('admin.chat');
+    Route::get('/', [ChatController::class, 'dashboard']);
     Route::get('/dashboard', [ChatController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/users', [ChatController::class, 'users'])->name('admin.users');
     Route::get('/projects', [ChatController::class, 'projects'])->name('admin.projects');

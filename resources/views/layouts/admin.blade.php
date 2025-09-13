@@ -192,14 +192,6 @@
                             </a>
                         </li>
                         <li class="group/menu-item relative">
-                            <a href="/admin" class="sidebar-item flex w-full items-center cursor-pointer gap-2 overflow-hidden rounded-md p-2 text-left transition-all hover:bg-gray-700 h-8 text-sm {{ request()->is('admin') && !request()->is('admin/dashboard') && !request()->is('admin/users') ? 'active bg-gray-700' : '' }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                </svg>
-                                <span>Chat</span>
-                            </a>
-                        </li>
-                        <li class="group/menu-item relative">
                             <a href="/admin/users" class="sidebar-item flex w-full items-center cursor-pointer gap-2 overflow-hidden rounded-md p-2 text-left transition-all hover:bg-gray-700 h-8 text-sm {{ request()->is('admin/users') ? 'active bg-gray-700' : '' }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
