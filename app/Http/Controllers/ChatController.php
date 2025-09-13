@@ -73,6 +73,21 @@ class ChatController extends Controller
                 'response_time' => $responseTime,
             ]);
 
+            // Log the request for analytics
+            \App\Models\RequestLog::create([
+                'user_uuid' => $userUuid,
+                'project_id' => 1,
+                'ip_address' => $request->ip(),
+                'method' => 'POST',
+                'path' => '/chat',
+                'request_data' => json_encode(['message' => $request->message]),
+                'response_code' => 200,
+                'response_data' => json_encode(['success' => true, 'tokens_used' => $tokensUsed]),
+                'response_time' => intval($responseTime * 1000), // Convert to milliseconds
+                'user_agent' => $request->userAgent(),
+                'action' => 'chat_message',
+            ]);
+
             return response()->json([
                 'success' => true,
                 'message' => $reply,
@@ -83,6 +98,26 @@ class ChatController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            // Log the error request for analytics
+            try {
+                \App\Models\RequestLog::create([
+                    'user_uuid' => $request->input('user_uuid', $this->generateUserUuid($request)),
+                    'project_id' => 1,
+                    'ip_address' => $request->ip(),
+                    'method' => 'POST',
+                    'path' => '/chat',
+                    'request_data' => json_encode(['message' => $request->message]),
+                    'response_code' => 500,
+                    'response_data' => json_encode(['error' => $e->getMessage()]),
+                    'response_time' => 0,
+                    'user_agent' => $request->userAgent(),
+                    'action' => 'chat_message_error',
+                    'error_message' => $e->getMessage(),
+                ]);
+            } catch (\Exception $logError) {
+                // If logging fails, continue without breaking
+            }
+
             return response()->json([
                 'success' => false,
                 'error' => 'Bir hata oluştu: ' . $e->getMessage()
@@ -130,29 +165,45 @@ class ChatController extends Controller
 
     private function generateChartData()
     {
-        // Get data for last 7 days - simplified daily data only
+        // Get REAL data for last 7 days - NO dummy data
         $requests = [];
         $messages = [];
         $users = [];
         $errors = [];
 
         for ($i = 6; $i >= 0; $i--) {
-            $date = now()->subDays($i)->format('Y-m-d');
+            $date = now()->subDays($i);
+            $dateString = $date->format('Y-m-d');
 
-            // Real data from chat messages
-            $dailyMessages = \App\Models\ChatMessage::whereDate('created_at', $date)->count();
+            // REAL data from chat messages
+            $dailyMessages = \App\Models\ChatMessage::whereDate('created_at', $dateString)->count();
             $messages[] = $dailyMessages;
             
-            // Simulate API requests (slightly higher than messages)
-            $requests[] = $dailyMessages + rand(0, 5);
+            // REAL data from request logs (if available), otherwise use chat messages as proxy
+            $dailyRequests = \App\Models\RequestLog::whereDate('created_at', $dateString)->count();
+            if ($dailyRequests == 0 && $dailyMessages > 0) {
+                // If no request logs, use chat messages as API requests (each message = 1 request)
+                $dailyRequests = $dailyMessages;
+            }
+            $requests[] = $dailyRequests;
 
-            // Count unique users per day
-            $dailyUsers = \App\Models\ChatMessage::whereDate('created_at', $date)
+            // REAL unique users per day from chat messages
+            $dailyUsers = \App\Models\ChatMessage::whereDate('created_at', $dateString)
                 ->distinct('user_uuid')->count('user_uuid');
             $users[] = $dailyUsers;
 
-            // Simple error simulation (2-5% of requests)
-            $errors[] = rand(0, max(1, intval($dailyMessages * 0.03)));
+            // REAL error data from request logs or calculate from failed requests
+            $dailyErrors = 0;
+            
+            // Try to get real error count from request logs
+            if (\Schema::hasTable('request_logs')) {
+                $dailyErrors = \App\Models\RequestLog::whereDate('created_at', $dateString)
+                    ->where('response_code', '>=', 400)
+                    ->count();
+            }
+            
+            // If no request logs table or no errors, use 0 (no fake data)
+            $errors[] = $dailyErrors;
         }
 
         return [
