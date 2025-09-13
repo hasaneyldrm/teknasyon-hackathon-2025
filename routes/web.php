@@ -34,6 +34,11 @@ Route::prefix('admin')->group(function () {
     Route::get('/projects/{id}/edit', [ChatController::class, 'editProject'])->name('admin.projects.edit');
     Route::put('/projects/{id}', [ChatController::class, 'updateProject'])->name('admin.projects.update');
     Route::delete('/projects/{id}', [ChatController::class, 'destroyProject'])->name('admin.projects.destroy');
+    
+    // Settings and History Routes
+    Route::get('/settings', [ChatController::class, 'settings'])->name('admin.settings');
+    Route::post('/settings', [ChatController::class, 'updateSettings'])->name('admin.settings.update');
+    Route::get('/history', [ChatController::class, 'history'])->name('admin.history');
 });
 
 // Chat API endpoint

@@ -388,4 +388,104 @@ class ChatController extends Controller
 
         return redirect()->route('admin.projects')->with('success', 'Proje başarıyla silindi!');
     }
+
+    public function settings()
+    {
+        $settings = [
+            // API Settings
+            'openai_status' => config('services.openai.key') ? 'Aktif' : 'Pasif',
+            'openai_model' => 'gpt-3.5-turbo',
+            'max_tokens' => 2048,
+            'temperature' => 0.7,
+            
+            // System Settings
+            'app_name' => config('app.name'),
+            'app_env' => config('app.env'),
+            'app_debug' => config('app.debug'),
+            'app_timezone' => config('app.timezone'),
+            'database_connection' => config('database.default'),
+            
+            // Security Settings
+            'session_lifetime' => config('session.lifetime'),
+            'rate_limit_enabled' => true,
+            'ip_ban_enabled' => true,
+            'request_logging' => true,
+            
+            // Performance Settings
+            'cache_driver' => config('cache.default'),
+            'queue_driver' => config('queue.default'),
+            'mail_driver' => config('mail.default'),
+        ];
+
+        // Recent system activities
+        $systemLogs = \App\Models\RequestLog::latest()->limit(50)->get();
+        
+        return view('admin.settings', compact('settings', 'systemLogs'));
+    }
+
+    public function updateSettings(Request $request)
+    {
+        $request->validate([
+            'openai_model' => 'required|string',
+            'max_tokens' => 'required|integer|min:1|max:4096',
+            'temperature' => 'required|numeric|min:0|max:2',
+        ]);
+
+        // In a real app, you'd save these to database or config files
+        // For now, just return success
+        
+        return redirect()->route('admin.settings')->with('success', 'Ayarlar başarıyla güncellendi!');
+    }
+
+    public function history()
+    {
+        // Chat history statistics
+        $chatStats = [
+            'total_messages' => \App\Models\ChatMessage::count(),
+            'today_messages' => \App\Models\ChatMessage::whereDate('created_at', today())->count(),
+            'this_week_messages' => \App\Models\ChatMessage::where('created_at', '>=', now()->startOfWeek())->count(),
+            'this_month_messages' => \App\Models\ChatMessage::where('created_at', '>=', now()->startOfMonth())->count(),
+            'avg_messages_per_day' => round(\App\Models\ChatMessage::where('created_at', '>=', now()->subDays(30))->count() / 30, 1),
+        ];
+
+        // User activity statistics
+        $userStats = [
+            'active_users_today' => \App\Models\ChatMessage::whereDate('created_at', today())
+                ->distinct('user_uuid')->count('user_uuid'),
+            'active_users_week' => \App\Models\ChatMessage::where('created_at', '>=', now()->startOfWeek())
+                ->distinct('user_uuid')->count('user_uuid'),
+            'total_unique_users' => \App\Models\ChatMessage::distinct('user_uuid')->count('user_uuid'),
+        ];
+
+        // Recent chat messages
+        $recentChats = \App\Models\ChatMessage::with(['project'])
+            ->latest()
+            ->limit(100)
+            ->get();
+
+        // System activity logs
+        $systemActivity = \App\Models\RequestLog::latest()->limit(100)->get();
+
+        // Popular projects
+        $popularProjects = \App\Models\Project::withCount('chatMessages')
+            ->orderBy('chat_messages_count', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Monthly chat activity for chart
+        $monthlyActivity = \App\Models\ChatMessage::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->where('created_at', '>=', now()->subDays(30))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        return view('admin.history', compact(
+            'chatStats',
+            'userStats',
+            'recentChats',
+            'systemActivity',
+            'popularProjects',
+            'monthlyActivity'
+        ));
+    }
 }

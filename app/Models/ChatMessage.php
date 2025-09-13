@@ -18,6 +18,7 @@ class ChatMessage extends Model
         'model',
         'tokens_used',
         'response_time',
+        'type',
     ];
 
     protected $casts = [
