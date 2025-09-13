@@ -19,6 +19,11 @@ class ChatController extends Controller
         return view('chat.index');
     }
 
+    public function admin()
+    {
+        return view('chat.admin');
+    }
+
     public function chat(Request $request)
     {
         $request->validate([
@@ -64,5 +69,11 @@ class ChatController extends Controller
             'success' => true,
             'history' => []
         ]);
+    }
+
+    public function settings()
+    {
+        // Gelecekte ayarlar sayfası için kullanılabilir
+        return view('chat.settings');
     }
 }
