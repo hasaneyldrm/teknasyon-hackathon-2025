@@ -19,10 +19,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/projects', [ChatController::class, 'projects'])->name('admin.projects');
     Route::get('/security', [ChatController::class, 'security'])->name('admin.security');
     
-    // Database viewer routes
-    Route::get('/database', [App\Http\Controllers\DatabaseController::class, 'index'])->name('admin.database');
-    Route::get('/database/stats', [App\Http\Controllers\DatabaseController::class, 'stats'])->name('admin.database.stats');
-    Route::get('/database/table/{table}', [App\Http\Controllers\DatabaseController::class, 'table'])->name('admin.database.table');
 });
 
 // Chat API endpoint
