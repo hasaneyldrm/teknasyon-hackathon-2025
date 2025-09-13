@@ -1,0 +1,54 @@
+# RnBoil Style Security Configuration
+# Basit ve etkili güvenlik koruması
+
+# Directory browsing kapalı
+Options -Indexes
+
+# Hassas dosyaları koru
+<FilesMatch "\.(env|htaccess|htpasswd|ini|log|txt|md|json|lock|xml|yml|yaml|sql|sqlite|bak|backup|old|tmp|temp|conf|config)$">
+    Require all denied
+</FilesMatch>
+
+# PHP dosyalarına doğrudan erişimi engelle (public hariç)
+<Files "*.php">
+    <RequireAll>
+        Require all denied
+    </RequireAll>
+</Files>
+
+# Önemli dosyaları özellikle koru
+<Files ".env">
+    Require all denied
+</Files>
+
+<Files "composer.json">
+    Require all denied
+</Files>
+
+<Files "composer.lock">
+    Require all denied
+</Files>
+
+<Files "package.json">
+    Require all denied
+</Files>
+
+<Files "package-lock.json">
+    Require all denied
+</Files>
+
+<Files "artisan">
+    Require all denied
+</Files>
+
+# Güvenlik başlıkları
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# Server signature gizle
+ServerSignature Off
