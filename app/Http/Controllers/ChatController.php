@@ -127,193 +127,38 @@ class ChatController extends Controller
         return view('admin.dashboard', compact('stats', 'chartData'));
     }
 
-    public function dashboardData(Request $request)
-    {
-        $period = $request->get('period', '1w');
-        
-        $chartData = $this->generateChartDataForPeriod($period);
-        
-        return response()->json($chartData);
-    }
-
-    private function generateChartDataForPeriod($period)
-    {
-        switch ($period) {
-            case '10m':
-                return $this->generateMinuteData(10);
-            case '1h':
-                return $this->generateMinuteData(60);
-            case '1d':
-                return $this->generateHourlyData(24);
-            case '1w':
-                return $this->generateDailyData(7);
-            case '1m':
-                return $this->generateDailyData(30);
-            case '1y':
-                return $this->generateMonthlyData(12);
-            default:
-                return $this->generateDailyData(7);
-        }
-    }
-
-    private function generateMinuteData($minutes)
-    {
-        $data = [
-            'requests' => [],
-            'rateLimited' => [],
-            'deviceCheckPassed' => [],
-            'deviceCheckFailed' => [],
-            'simulatorBypass' => [],
-            'errors' => [],
-            'labels' => []
-        ];
-
-        for ($i = $minutes - 1; $i >= 0; $i--) {
-            $time = now()->subMinutes($i);
-            $data['labels'][] = $time->format('H:i');
-            
-            // Simulate real-time data
-            $requests = rand(0, 10);
-            $data['requests'][] = $requests;
-            $data['rateLimited'][] = rand(0, 2);
-            $data['deviceCheckPassed'][] = max(0, $requests - rand(0, 2));
-            $data['deviceCheckFailed'][] = rand(0, 1);
-            $data['simulatorBypass'][] = rand(0, 1);
-            $data['errors'][] = rand(0, 1);
-        }
-
-        return $data;
-    }
-
-    private function generateHourlyData($hours)
-    {
-        $data = [
-            'requests' => [],
-            'rateLimited' => [],
-            'deviceCheckPassed' => [],
-            'deviceCheckFailed' => [],
-            'simulatorBypass' => [],
-            'errors' => [],
-            'labels' => []
-        ];
-
-        for ($i = $hours - 1; $i >= 0; $i--) {
-            $time = now()->subHours($i);
-            $data['labels'][] = $time->format('H:00');
-            
-            // Get real data by hour
-            $hourlyMessages = \App\Models\ChatMessage::where('created_at', '>=', $time->startOfHour())
-                ->where('created_at', '<', $time->copy()->addHour()->startOfHour())
-                ->count();
-            
-            $data['requests'][] = $hourlyMessages;
-            $data['rateLimited'][] = max(0, $hourlyMessages - rand(0, 3));
-            $data['deviceCheckPassed'][] = max(0, $hourlyMessages - rand(0, 2));
-            $data['deviceCheckFailed'][] = rand(0, 1);
-            $data['simulatorBypass'][] = rand(0, 1);
-            $data['errors'][] = rand(0, max(1, intval($hourlyMessages * 0.03)));
-        }
-
-        return $data;
-    }
-
-    private function generateDailyData($days)
-    {
-        $data = [
-            'requests' => [],
-            'rateLimited' => [],
-            'deviceCheckPassed' => [],
-            'deviceCheckFailed' => [],
-            'simulatorBypass' => [],
-            'errors' => [],
-            'labels' => []
-        ];
-
-        for ($i = $days - 1; $i >= 0; $i--) {
-            $date = now()->subDays($i);
-            $data['labels'][] = $date->format('M j');
-            
-            $dailyMessages = \App\Models\ChatMessage::whereDate('created_at', $date->format('Y-m-d'))->count();
-            
-            $data['requests'][] = $dailyMessages;
-            $data['rateLimited'][] = max(0, $dailyMessages - rand(0, 5));
-            $data['deviceCheckPassed'][] = max(0, $dailyMessages - rand(0, 3));
-            $data['deviceCheckFailed'][] = rand(0, 2);
-            $data['simulatorBypass'][] = rand(0, 1);
-            $data['errors'][] = rand(0, max(1, intval($dailyMessages * 0.05)));
-        }
-
-        return $data;
-    }
-
-    private function generateMonthlyData($months)
-    {
-        $data = [
-            'requests' => [],
-            'rateLimited' => [],
-            'deviceCheckPassed' => [],
-            'deviceCheckFailed' => [],
-            'simulatorBypass' => [],
-            'errors' => [],
-            'labels' => []
-        ];
-
-        for ($i = $months - 1; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
-            $data['labels'][] = $date->format('M Y');
-            
-            $monthlyMessages = \App\Models\ChatMessage::whereYear('created_at', $date->year)
-                ->whereMonth('created_at', $date->month)
-                ->count();
-            
-            $data['requests'][] = $monthlyMessages;
-            $data['rateLimited'][] = max(0, $monthlyMessages - rand(0, 20));
-            $data['deviceCheckPassed'][] = max(0, $monthlyMessages - rand(0, 10));
-            $data['deviceCheckFailed'][] = rand(0, 5);
-            $data['simulatorBypass'][] = rand(0, 3);
-            $data['errors'][] = rand(0, max(1, intval($monthlyMessages * 0.04)));
-        }
-
-        return $data;
-    }
 
     private function generateChartData()
     {
-        // Get data for last 7 days
-        $days = [];
+        // Get data for last 7 days - simplified daily data only
         $requests = [];
-        $rateLimited = [];
-        $deviceCheckPassed = [];
-        $deviceCheckFailed = [];
-        $simulatorBypass = [];
+        $messages = [];
+        $users = [];
         $errors = [];
 
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i)->format('Y-m-d');
-            $days[] = $date;
 
-            // Real data from chat messages (simulating API requests)
+            // Real data from chat messages
             $dailyMessages = \App\Models\ChatMessage::whereDate('created_at', $date)->count();
-            $requests[] = $dailyMessages;
+            $messages[] = $dailyMessages;
+            
+            // Simulate API requests (slightly higher than messages)
+            $requests[] = $dailyMessages + rand(0, 5);
 
-            // Simulate rate limiting data based on real activity
-            $rateLimited[] = max(0, $dailyMessages - rand(0, 5));
+            // Count unique users per day
+            $dailyUsers = \App\Models\ChatMessage::whereDate('created_at', $date)
+                ->distinct('user_uuid')->count('user_uuid');
+            $users[] = $dailyUsers;
 
-            // Simulate device check data
-            $deviceCheckPassed[] = max(0, $dailyMessages - rand(0, 3));
-            $deviceCheckFailed[] = rand(0, 2);
-            $simulatorBypass[] = rand(0, 1);
-
-            // Simulate error data (non-200 responses)
-            $errors[] = rand(0, max(1, intval($dailyMessages * 0.05))); // 5% error rate
+            // Simple error simulation (2-5% of requests)
+            $errors[] = rand(0, max(1, intval($dailyMessages * 0.03)));
         }
 
         return [
             'requests' => $requests,
-            'rateLimited' => $rateLimited,
-            'deviceCheckPassed' => $deviceCheckPassed,
-            'deviceCheckFailed' => $deviceCheckFailed,
-            'simulatorBypass' => $simulatorBypass,
+            'messages' => $messages,
+            'users' => $users,
             'errors' => $errors,
         ];
     }
