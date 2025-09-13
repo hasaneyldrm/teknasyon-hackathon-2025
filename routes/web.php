@@ -11,8 +11,14 @@ Route::get('/', function () {
 // Old chat interface (keep for compatibility)
 Route::get('/old', [ChatController::class, 'index'])->name('chat.index');
 
-// New admin-style chat interface
-Route::get('/admin', [ChatController::class, 'admin'])->name('chat.admin');
+// Admin Panel Routes
+Route::prefix('admin')->group(function () {
+    Route::get('/', [ChatController::class, 'admin'])->name('admin.chat');
+    Route::get('/dashboard', [ChatController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/users', [ChatController::class, 'users'])->name('admin.users');
+    Route::get('/projects', [ChatController::class, 'projects'])->name('admin.projects');
+    Route::get('/security', [ChatController::class, 'security'])->name('admin.security');
+});
 
 // Chat API endpoint
 Route::post('/chat', [ChatController::class, 'chat'])->name('chat.send');

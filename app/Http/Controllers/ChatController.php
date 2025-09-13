@@ -76,4 +76,24 @@ class ChatController extends Controller
         // Gelecekte ayarlar sayfası için kullanılabilir
         return view('chat.settings');
     }
+
+    public function dashboard()
+    {
+        return view('admin.dashboard');
+    }
+
+    public function users()
+    {
+        return view('admin.users');
+    }
+
+    public function projects()
+    {
+        return view('admin.projects');
+    }
+
+    public function security()
+    {
+        return view('admin.security');
+    }
 }
